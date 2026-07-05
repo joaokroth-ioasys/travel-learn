@@ -1,0 +1,27 @@
+/* Cinematic pan-zoom overlay — sits over the map svg (same box: top of the
+   .map-container, width 100%, square aspect from the 0 0 700 700 viewBox). It is
+   opaque (parchment backdrop) so it hides the already-settled destination map
+   underneath until the camera arrives, then crossfades out to reveal it. */
+.map-pan-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 6;
+  pointer-events: none;       /* no clicks mid-flight */
+  opacity: 1;
+}
+
+.map-pan-svg {
+  width: 100%;
+  display: block;
+}
+
+.map-pan-overlay--out {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pan-overlay { display: none; }   /* instant cut; no camera move */
+}

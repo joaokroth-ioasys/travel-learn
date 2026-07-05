@@ -1,0 +1,256 @@
+/* ── MapScreen - minimalist travel-poster style ──────────────────────────── */
+
+/* Viewport wrapper */
+.map-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f0e8;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, #ede4d0 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, #e0d5be 0%, transparent 55%);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding: 20px 16px 80px;
+  box-sizing: border-box;
+}
+
+/* Title */
+.map-title {
+  font-size: clamp(1.1rem, 4vw, 1.55rem);
+  font-weight: 900;
+  color: #4a3728;
+  letter-spacing: 0.06em;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* Map card */
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: #f0eadc;
+  border-radius: 16px;
+  box-shadow:
+    0 10px 40px rgba(74, 55, 40, 0.22),
+    0 2px 10px rgba(74, 55, 40, 0.12),
+    inset 0 0 0 2px rgba(184, 168, 136, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Decorative corner marks */
+.map-container::before,
+.map-container::after {
+  content: '';
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-color: #b8a888;
+  border-style: solid;
+  opacity: 0.45;
+  z-index: 5;
+  pointer-events: none;
+}
+.map-container::before {
+  top: 10px;
+  left: 10px;
+  border-width: 2px 0 0 2px;
+}
+.map-container::after {
+  bottom: 46px; /* sits above the progress strip */
+  right: 10px;
+  border-width: 0 2px 2px 0;
+}
+
+/* SVG fills the card width, height driven by viewBox aspect ratio */
+.map-svg {
+  width: 100%;
+  display: block;
+  /* 620:680 ≈ 0.912 but let the browser size from viewBox */
+}
+
+/* Draggable (Monde) map: grab cursor + touch-action:none so touch-drag / pinch
+   move the map instead of scrolling the page. */
+.map-svg--pannable {
+  cursor: grab;
+  touch-action: none;
+}
+.map-svg--pannable:active {
+  cursor: grabbing;
+}
+
+/* Zoom +/- stack, bottom-left, above the progress strip (pannable map only) */
+.map-zoom-controls {
+  position: absolute;
+  left: 10px;
+  bottom: 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 6;
+}
+.map-zoom-controls button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(184, 168, 136, 0.7);
+  border-radius: 8px;
+  background: rgba(240, 234, 220, 0.92);
+  color: #3a2d20;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(74, 55, 40, 0.18);
+}
+.map-zoom-controls button:active {
+  background: #e2d8c2;
+}
+
+/* Journey switch: reads like grabbing the map and dragging it to the target
+   (clipped by the container's overflow:hidden, whose bg matches the land fill so
+   the briefly-revealed edge looks like more map). The content is pulled, in one
+   solid motion (no fade), from the target's side toward centre — fr→de slides
+   down-left ('sw'), de→fr slides up-right ('ne'). Ease-out = a drag's release. */
+.map-svg--ne   { animation: map-drag-ne 0.55s cubic-bezier(0.16, 0.84, 0.34, 1); }
+.map-svg--sw   { animation: map-drag-sw 0.55s cubic-bezier(0.16, 0.84, 0.34, 1); }
+.map-svg--fade { animation: map-enter-fade 0.4s ease; }
+
+@keyframes map-drag-ne {
+  from { transform: translate(-12%, 12%); }
+  to   { transform: translate(0, 0); }
+}
+@keyframes map-drag-sw {
+  from { transform: translate(12%, -12%); }
+  to   { transform: translate(0, 0); }
+}
+@keyframes map-enter-fade {
+  from { opacity: 0.3; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-svg--ne, .map-svg--sw, .map-svg--fade { animation: none; }
+}
+
+/* ── Journey path ─────────────────────────────────────────────────────────── */
+.journey-path {
+  animation: dash-flow 80s linear infinite;
+}
+
+@keyframes dash-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -200; }
+}
+
+/* ── City groups ──────────────────────────────────────────────────────────── */
+.city-group {
+  cursor: pointer;
+  transition: filter 0.18s ease;
+}
+
+.city-group:hover {
+  filter: brightness(1.15) drop-shadow(0 0 6px var(--accent));
+}
+
+.city-group:focus {
+  outline: none;
+}
+
+.city-group:focus-visible .city-dot {
+  stroke: #4a3728;
+  stroke-width: 3;
+}
+
+/* Cities outside Germany (Vienna, Zürich) rendered slightly faded */
+.city-abroad {
+  opacity: 0.88;
+}
+
+/* Dot hover scale - applied to the circle via SVG transform */
+.city-group:hover .city-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.2);
+  transition: transform 0.18s ease;
+}
+
+/* Pulsing glow ring */
+.city-glow {
+  animation: glow-pulse 2.6s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { r: 10; opacity: 0.35; }
+  50%       { r: 14; opacity: 0.65; }
+}
+
+/* ── Bottom progress strip ────────────────────────────────────────────────── */
+.map-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: #3a2d20;
+  color: #f5f0e8;
+  border-radius: 0 0 16px 16px;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.map-progress-text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0.92;
+}
+
+.map-progress-bar-wrap {
+  flex: 1;
+  max-width: 220px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.map-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e9c46a, #f4a261);
+  border-radius: 8px;
+  transition: width 0.55s ease;
+  min-width: 4px;
+}
+
+/* ── Gamification header stats ────────────────────────────────────────────── */
+.map-header-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+}
+
+.streak-badge { color: #e05; }
+.xp-badge { color: #3a7bd5; }
+
+/* ── City dot gold state ──────────────────────────────────────────────────── */
+.city-dot--gold { box-shadow: 0 0 14px 3px gold; }
+
+/* ── City star row ────────────────────────────────────────────────────────── */
+.city-stars {
+  font-size: 10px;
+  line-height: 1;
+  color: #caa820;
+  letter-spacing: 1px;
+}

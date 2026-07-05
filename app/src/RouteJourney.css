@@ -1,0 +1,351 @@
+/* RouteJourney — the immersive 10-stage Paris timeline */
+
+.route { margin-bottom: 8px; }
+
+/* ── Progress header ── */
+.route__progress { margin-bottom: 16px; }
+
+.route__progress-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 8px;
+  flex-wrap: wrap;
+}
+.route__progress-strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent, #0055A4);
+}
+.route__progress-sub { font-size: 0.9rem; color: #7a6a58; }
+
+.route__bar {
+  height: 6px;
+  background: #e8e0d4;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.route__bar-fill {
+  height: 100%;
+  background: var(--accent, #0055A4);
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.route__progress-count {
+  font-size: 0.74rem;
+  color: #7a6a58;
+  margin: 6px 0 0;
+}
+
+/* ── Timeline ── */
+.timeline {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding: 8px 4px 14px;
+  margin-bottom: 8px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tl-node {
+  position: relative;
+  flex: 0 0 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* connector line into each node (filled when the previous stop is done) */
+.tl-node:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: 19px;
+  right: 50%;
+  width: 100%;
+  height: 3px;
+  background: #e0d6c8;
+  z-index: 0;
+}
+.tl-node--linkfill:not(:first-child)::before { background: var(--accent, #0055A4); }
+
+.tl-node__circle {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #d8cdbd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.tl-node--done .tl-node__circle {
+  background: var(--accent, #0055A4);
+  border-color: var(--accent, #0055A4);
+  color: #fff;
+  font-weight: 800;
+  animation: tl-pop 0.4s ease;
+}
+
+.tl-node--current .tl-node__circle {
+  border-color: var(--accent, #0055A4);
+  transform: scale(1.18);
+  box-shadow: 0 0 0 4px var(--accent-soft, rgba(0, 85, 164, 0.14));
+}
+
+@keyframes tl-pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.tl-node__label {
+  font-size: 0.62rem;
+  color: #7a6a58;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 72px;
+  height: 2.4em;
+  overflow: hidden;
+}
+.tl-node--current .tl-node__label { color: var(--accent, #0055A4); font-weight: 700; }
+
+.tl-node__fav {
+  position: absolute;
+  top: -4px;
+  right: 16px;
+  font-size: 11px;
+  color: #e0567a;
+  z-index: 2;
+}
+
+/* ── Completion banner ── */
+.route__complete {
+  background: linear-gradient(135deg, var(--accent, #0055A4), var(--accent-dark, #003a70));
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  animation: stage-in 0.4s ease;
+}
+
+/* ── Current stage card ── */
+.stage {
+  background: #fff;
+  border: 1px solid #e8e0d4;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(74, 55, 40, 0.12);
+  animation: stage-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes stage-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stage__photo { position: relative; }
+.stage__photo .city-page__photo-card { border-radius: 0; box-shadow: none; }
+.stage__photo .city-page__photo-img,
+.stage__photo .city-page__photo-fallback,
+.stage__photo .city-page__photo-loading { height: 420px; }
+.stage__photo .city-page__photo-caption { display: none; }
+
+.stage__fav {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: #e0567a;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+}
+.stage__fav:hover { transform: scale(1.12); }
+.stage__fav--on { animation: tl-pop 0.4s ease; }
+
+.stage__body { padding: 18px 20px 20px; }
+
+.stage__step {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #0055A4);
+  margin: 0 0 4px;
+}
+.stage__name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #3a2d20;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+.stage__narrative {
+  font-size: 0.95rem;
+  color: #4a3728;
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+
+.stage__phrases {
+  background: var(--accent-soft, rgba(0, 85, 164, 0.08));
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+}
+.stage__phrases-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #0055A4);
+  margin: 0 0 6px;
+}
+.stage__phrases ul { margin: 0; padding: 0; list-style: none; }
+.stage__phrases li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.stage__phrase-native { display: flex; flex-direction: column; }
+.stage__phrase-fr { font-size: 0.9rem; font-style: italic; color: #3a2d20; }
+/* romaji reading under the kana/kanji line (Japan journey only) */
+.stage__phrase-romaji { font-size: 0.72rem; font-style: italic; color: #9a8a72; }
+.stage__phrase-en {
+  font-size: 0.8rem;
+  color: #7a6a58;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Mini quiz ── */
+.stage-quiz {
+  border-top: 1px solid #eee4d6;
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+.stage-quiz__q {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #3a2d20;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+.stage-quiz__solved { color: #1e7e44; }
+
+.stage-quiz__options { display: flex; flex-direction: column; gap: 8px; }
+
+.stage-quiz__opt {
+  text-align: left;
+  background: #faf7f1;
+  border: 1.5px solid #e8e0d4;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: #3a2d20;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+.stage-quiz__opt:not(:disabled):hover { border-color: var(--accent, #0055A4); transform: translateX(2px); }
+.stage-quiz__opt:disabled { cursor: default; }
+
+.stage-quiz__opt--correct {
+  background: #eafaf1;
+  border-color: #1e7e44;
+  color: #1e7e44;
+  font-weight: 700;
+}
+.stage-quiz__opt--wrong {
+  background: #fdecec;
+  border-color: #d64545;
+  color: #b53030;
+}
+.stage-quiz__opt--reveal { border-color: #1e7e44; }
+
+.stage-quiz__feedback {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.stage-quiz__feedback--ok { color: #1e7e44; animation: stage-in 0.3s ease; }
+.stage-quiz__feedback--wrong { color: #b53030; }
+
+.stage__lesson {
+  width: 100%;
+  background: var(--accent, #0055A4);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.stage__lesson:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* ── Stage navigation ── */
+.stage-nav {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 28px;
+}
+.stage-nav__btn {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #d8cdbd;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4a3728;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.stage-nav__btn:not(:disabled):hover { background: #f5efe6; transform: translateY(-1px); }
+.stage-nav__btn:disabled { opacity: 0.4; cursor: default; }
+.stage-nav__btn--next {
+  background: var(--accent, #0055A4);
+  border-color: var(--accent, #0055A4);
+  color: #fff;
+}
+.stage-nav__btn--next:not(:disabled):hover { filter: brightness(1.08); background: var(--accent, #0055A4); }
+
+.route__map-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a6a58;
+  margin: 0 0 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage, .route__complete, .stage-quiz__feedback--ok,
+  .tl-node--done .tl-node__circle, .stage__fav--on { animation: none; }
+  .route__bar-fill { transition: none; }
+}

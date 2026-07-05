@@ -1,0 +1,57 @@
+.citylife {
+  position: relative; /* anchors the .flag-corner switcher */
+  padding: 20px 16px 88px;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cl-coming-soon {
+  padding: 40px 20px;
+  text-align: center;
+  color: #7a7a96;
+  font-size: 15px;
+}
+
+/* ── City header ── */
+.cl-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+.cl-header-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.cl-header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.cl-header-sub {
+  font-size: 13px;
+  color: #7a7a96;
+  margin-top: 2px;
+}
+
+/* ── Back button ── */
+.cl-back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #5a5a78;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+}

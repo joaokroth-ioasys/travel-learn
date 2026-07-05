@@ -1,0 +1,747 @@
+/* ── Passport tab container ───────────────────────────────── */
+.passport-tab {
+  min-height: 100dvh;
+  background: #1c1c38;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 12px 100px;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+/* ── Country switcher ─────────────────────────────────────── */
+.pp-switcher {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.pp-switcher-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cfcfe6;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.pp-switcher-btn.active {
+  background: #f7f2e5;
+  color: #1c1c38;
+  border-color: #f7f2e5;
+}
+
+.pp-switcher-flag {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* ── Closed cover (minimalist EU passport front) ───────────── */
+.pp-cover {
+  width: 100%;
+  max-width: 520px;
+  min-height: 560px;
+  box-sizing: border-box;
+  border: none;
+  border-left: 7px solid rgba(0, 0, 0, 0.35);
+  border-radius: 4px 12px 12px 4px;
+  cursor: pointer;
+  color: #c8a24a;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 60%),
+    linear-gradient(160deg, #6e1426 0%, #561019 55%, #420b13 100%);
+  box-shadow:
+    0 16px 56px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 2px rgba(200, 162, 74, 0.35),
+    inset 0 0 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 64px 24px;
+  text-align: center;
+  animation: pp-cover-in 0.4s ease-out;
+}
+
+@keyframes pp-cover-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.pp-cover-eu {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.pp-cover-emblem {
+  font-size: 92px;
+  line-height: 1;
+  filter: sepia(1) saturate(2) hue-rotate(2deg) brightness(0.95);
+}
+
+.pp-cover-type {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* Biometric chip glyph: rounded rectangle with a centred dot */
+.pp-cover-bio {
+  width: 22px;
+  height: 16px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  position: relative;
+  opacity: 0.85;
+}
+.pp-cover-bio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 5px;
+  height: 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.pp-cover-hint {
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(200, 162, 74, 0.6);
+  animation: pp-cover-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pp-cover-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-cover { animation: none; }
+  .pp-cover-hint { animation: none; }
+}
+
+/* ── Open book ─────────────────────────────────────────────── */
+.passport-book {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 3px 10px 10px 3px;
+  box-shadow:
+    0 16px 56px rgba(0, 0, 0, 0.6),
+    0 2px 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  /* Stage depth so the right page turns in true 3D over the spine */
+  perspective: 1600px;
+}
+
+/* Page-turn: the right page drops onto the spread, hinged at the spine,
+   while the left page stays put — the way a real paper page falls. */
+.passport-page--right {
+  transform-origin: left center;
+  backface-visibility: hidden;
+  animation: pp-page-turn 0.55s cubic-bezier(0.33, 0.7, 0.4, 1);
+}
+
+@keyframes pp-page-turn {
+  from { transform: rotateY(-118deg); }
+  60%  { transform: rotateY(-12deg); }
+  to   { transform: rotateY(0deg); }
+}
+
+/* Curl shadow that sweeps off as the page settles flat */
+.passport-page--right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.4), transparent 55%);
+  animation: pp-page-shade 0.55s ease-out;
+}
+
+@keyframes pp-page-shade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .passport-page--right,
+  .passport-page--right::before { animation: none; }
+}
+
+.passport-page {
+  background: #f7f2e5;
+  padding: 13px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 510px;
+}
+
+.passport-page--left {
+  flex: 0 0 44%;
+}
+
+.passport-page--right {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* National stamp watermark behind the city-stamp grid */
+.pp-page-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 116%;
+  transform: translate(-50%, -50%) rotate(-11deg);
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 0;
+}
+.pp-stamps-label,
+.pp-stamps-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* The spine: dark binding between pages */
+.passport-spine {
+  width: 16px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    to right,
+    #06061a 0%,
+    #1a1a40 35%,
+    #2e2e60 50%,
+    #1a1a40 65%,
+    #06061a 100%
+  );
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.4), inset -2px 0 4px rgba(0,0,0,0.4);
+}
+
+/* Close button — top-right of the open book, returns to the cover */
+.pp-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 6;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(26, 26, 62, 0.65);
+  color: #f7f2e5;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.pp-close:hover,
+.pp-close:focus-visible {
+  background: #8b1a3a;
+  outline: none;
+}
+
+/* Dog-ear page-turn corner — folded-paper triangle at bottom-right */
+.pp-page-turn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  height: 56px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 5;
+  /* The visible fold: a cream triangle curling up from the corner */
+  background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.12) 50%, #ece6d6 56%);
+  border-bottom-right-radius: 9px;
+  box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.18);
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+.pp-page-turn:hover,
+.pp-page-turn:focus-visible {
+  width: 66px;
+  height: 66px;
+  outline: none;
+}
+
+/* ── Left page ─────────────────────────────────────────────── */
+.pp-rule {
+  height: 2.5px;
+  background: linear-gradient(to right, #1a1a3e, #8b1a3a);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.pp-photo-box {
+  border: 1.5px solid #bbb;
+  width: 68px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ede8d8;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.pp-photo-box--flag {
+  background: none;
+  border: none;
+  width: 177px;
+  height: 229px;
+  overflow: visible;
+}
+
+.pp-photo-box--flag .pp-flag-img {
+  padding: 0;
+}
+
+.pp-flag-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.pp-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.pp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-bottom: 0.5px solid #ccc;
+  padding-bottom: 4px;
+}
+
+.pp-field-label {
+  font-size: 4.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.pp-field-val {
+  font-size: 9px;
+  font-weight: 700;
+  color: #1a1a3e;
+  letter-spacing: 0.02em;
+}
+
+.pp-field-val--motto {
+  font-size: 6.5px;
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Decorative national stamps grid */
+.pp-deco {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 4px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.pp-deco-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 2px;
+  border: 1px dashed #b08;
+  border-color: rgba(139, 26, 58, 0.45);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  justify-content: center;
+  transform: rotate(-4deg);
+  opacity: 0.85;
+}
+
+.pp-deco-stamp:nth-child(even) { transform: rotate(5deg); }
+.pp-deco-stamp:nth-child(3n)   { transform: rotate(-2deg); }
+
+.pp-deco-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.pp-deco-label {
+  font-size: 4px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #8b1a3a;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Machine-readable zone strip */
+.pp-mrz {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Courier New', monospace;
+  font-size: 5px;
+  color: #555;
+  letter-spacing: 0.03em;
+  background: #ede8d4;
+  padding: 5px 4px;
+  border-top: 1px solid #d0c9b8;
+  line-height: 1.6;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Right page ─────────────────────────────────────────────── */
+.pp-stamps-label {
+  font-size: 5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #bbb;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 4px;
+  flex-shrink: 0;
+}
+
+.pp-stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  flex: 1;
+  align-content: start;
+}
+
+/* ── Stamp ─────────────────────────────────────────────────── */
+/*
+ * Each stamp:
+ *  - outer = city accent color (the "ink" border area)
+ *  - inner = cream (via layered background)
+ *  - perforated edges via CSS mask (semicircular holes at every 8px along each edge)
+ */
+.pp-stamp {
+  --sc: #b0a898;
+
+  border: none;
+  cursor: pointer;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+
+  /* Cream inner + accent-color outer frame */
+  background:
+    linear-gradient(#f0eadc, #f0eadc) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat,
+    var(--sc);
+
+  /* Perforated edges: semicircular holes every 8px on all four sides */
+  -webkit-mask:
+    radial-gradient(circle at 0 50%,   #0000 3.5px, #000 4px) 0      -4px / 4px 8px repeat-y,
+    radial-gradient(circle at 100% 50%, #0000 3.5px, #000 4px) 100%   -4px / 4px 8px repeat-y,
+    radial-gradient(circle at 50% 0,   #0000 3.5px, #000 4px) -4px   0    / 8px 4px repeat-x,
+    radial-gradient(circle at 50% 100%, #0000 3.5px, #000 4px) -4px   100% / 8px 4px repeat-x,
+    linear-gradient(#000 0 0) 4px 4px / calc(100% - 8px) calc(100% - 8px) no-repeat;
+  mask:
+    radial-gradient(circle at 0 50%,   #0000 3.5px, #000 4px) 0      -4px / 4px 8px repeat-y,
+    radial-gradient(circle at 100% 50%, #0000 3.5px, #000 4px) 100%   -4px / 4px 8px repeat-y,
+    radial-gradient(circle at 50% 0,   #0000 3.5px, #000 4px) -4px   0    / 8px 4px repeat-x,
+    radial-gradient(circle at 50% 100%, #0000 3.5px, #000 4px) -4px   100% / 8px 4px repeat-x,
+    linear-gradient(#000 0 0) 4px 4px / calc(100% - 8px) calc(100% - 8px) no-repeat;
+}
+
+/* Unstamped: muted gray, faded */
+.pp-stamp:not(.pp-stamp--inked) {
+  --sc: #c4bdb0;
+  opacity: 0.5;
+}
+
+/* Stamped: city color, slight random rotation */
+.pp-stamp.pp-stamp--inked {
+  transform: rotate(var(--rot, -1.5deg));
+}
+
+/* Vary rotation so stamps look hand-pressed */
+.pp-stamp:nth-child(3n+1) { --rot: -2.2deg; }
+.pp-stamp:nth-child(3n+2) { --rot:  1.4deg; }
+.pp-stamp:nth-child(3n)   { --rot: -0.6deg; }
+
+/* New stamp slam animation */
+@keyframes stampSlam {
+  0%   { transform: rotate(var(--rot,-1.5deg)) scale(2.6); opacity: 0; }
+  55%  { transform: rotate(calc(var(--rot,-1.5deg) + 1.2deg)) scale(0.92); opacity: 1; }
+  75%  { transform: rotate(var(--rot,-1.5deg)) scale(1.06); }
+  100% { transform: rotate(var(--rot,-1.5deg)) scale(1); }
+}
+
+.pp-stamp.pp-stamp--inked.pp-stamp--new {
+  animation: stampSlam 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Stamp content */
+.pp-stamp-icon {
+  font-size: 19px;
+  line-height: 1;
+}
+
+.pp-stamp:not(.pp-stamp--inked) .pp-stamp-icon {
+  filter: grayscale(1);
+  opacity: 0.3;
+}
+
+/* Real cropped city stamp fills the whole perforated cell */
+.pp-stamp--img {
+  padding: 3px;
+}
+
+.pp-stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pp-stamp-code {
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--sc);
+  line-height: 1;
+}
+
+.pp-stamp:not(.pp-stamp--inked) .pp-stamp-code {
+  color: #b0a898;
+}
+
+.pp-stamp-sub {
+  font-size: 5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sc);
+  text-align: center;
+  line-height: 1.3;
+  opacity: 0.85;
+}
+
+.pp-stamp:not(.pp-stamp--inked) .pp-stamp-sub {
+  color: #bbb;
+  opacity: 1;
+}
+
+.pp-stamp-date {
+  font-size: 4.5px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ── Detail modal ──────────────────────────────────────────── */
+.stamp-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.stamp-modal-inner {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.stamp-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.stamp-modal-icon {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.stamp-modal-img {
+  display: block;
+  width: 150px;
+  max-width: 60%;
+  height: auto;
+  margin: 0 auto 10px;
+}
+
+.stamp-modal-city {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #1a1a2e;
+}
+
+.stamp-modal-date {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 10px;
+  font-style: italic;
+}
+
+.stamp-modal-stats {
+  font-size: 15px;
+  color: #444;
+  margin: 0;
+}
+
+.stamp-modal-progress {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 18px;
+}
+
+.stamp-modal-go {
+  width: 100%;
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.stamp-modal-go:hover { opacity: 0.85; }
+
+/* ── Footer ────────────────────────────────────────────────── */
+.passport-footer {
+  width: 100%;
+  max-width: 520px;
+  padding: 4px 0;
+}
+
+.passport-progress-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.passport-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.passport-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a7bd5, #8b2fc9);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* ── Journey Complete ──────────────────────────────────────── */
+.passport-complete {
+  text-align: center;
+  position: relative;
+  padding: 12px 0 8px;
+  overflow: hidden;
+}
+
+.passport-complete-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.passport-complete-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+}
+
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 80px;
+  pointer-events: none;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(70px)  rotate(400deg); opacity: 0; }
+}
+
+.confetti-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  top: 0;
+  left: calc(var(--i) * 17px);
+  animation: confettiFall 1.6s ease-in forwards;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+
+.confetti-dot--0 { background: #3a7bd5; }
+.confetti-dot--1 { background: #d4820a; }
+.confetti-dot--2 { background: #2d7a4f; }
+.confetti-dot--3 { background: #c0392b; }

@@ -1,0 +1,439 @@
+/* CityPage - city detail and lesson list */
+
+/* ── Page wrapper ── */
+.city-page {
+  min-height: 100vh;
+  background: #f5f0e8;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding-bottom: 72px;
+}
+
+/* ── Back button ── */
+.city-page__back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 6px 14px 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a2d20;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 20;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.city-page__back:hover {
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transform: translateX(-2px);
+}
+
+.city-page__back-arrow {
+  font-size: 15px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* ── Hero banner ── */
+.city-page__hero {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* Darker gradient overlay applied via inline style + this pseudo-element */
+.city-page__hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.38) 100%
+  );
+  pointer-events: none;
+}
+
+.city-page__hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 0 24px;
+}
+
+.city-page__hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.city-page__hero-icon {
+  font-size: 48px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.city-page__hero-name {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  line-height: 1.1;
+}
+
+.city-page__hero-tagline {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Content area ── */
+.city-page__body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+/* ── City description ── */
+.city-page__description {
+  font-size: 0.95rem;
+  color: #4a3728;
+  line-height: 1.75;
+  margin: 0 0 24px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-left: 3px solid #d0c4b4;
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+}
+
+.city-page__description-text { margin: 0; }
+
+.city-page__translate {
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d0c4b4;
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-style: normal;
+  color: #4a3728;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.city-page__translate:hover { background: #fff; transform: translateY(-1px); }
+
+/* ── Photo gallery ── */
+.city-page__photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.city-page__photo-card {
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e8e0d4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.city-page__photo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.city-page__photo-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.city-page__photo-loading {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(90deg, #e8e0d4 25%, #f5efe6 50%, #e8e0d4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.city-page__photo-fallback {
+  width: 100%;
+  height: 160px;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.city-page__photo-caption {
+  font-size: 0.73rem;
+  color: #7a6a58;
+  line-height: 1.4;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+@media (max-width: 600px) {
+  .city-page__photos {
+    grid-template-columns: 1fr;
+  }
+
+  .city-page__photo-img,
+  .city-page__photo-fallback {
+    height: 200px;
+  }
+}
+
+/* ── Section headings ── */
+.city-page__section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a6a58;
+  margin: 0 0 12px;
+}
+
+/* ── Objectives section ── */
+.city-page__objectives {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.city-page__obj-card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e8e0d4;
+  border-radius: 12px;
+  padding: 16px 18px;
+  min-width: 0;
+}
+
+.city-page__obj-card-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a6a58;
+  margin: 0 0 10px;
+}
+
+.city-page__vocab-list {
+  margin: 0;
+  padding: 0 0 0 18px;
+  list-style: disc;
+}
+
+.city-page__vocab-list li {
+  font-size: 0.88rem;
+  color: #4a3728;
+  line-height: 1.55;
+  margin-bottom: 2px;
+}
+
+.city-page__grammar-text {
+  font-size: 0.88rem;
+  color: #4a3728;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Lessons section ── */
+.city-page__lessons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Individual lesson card ── */
+.city-page__lesson-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #e8e0d4;
+  border-radius: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.city-page__lesson-card:hover {
+  box-shadow: 0 6px 20px rgba(74, 55, 40, 0.13);
+  transform: translateY(-2px);
+  border-color: #d0c4b4;
+}
+
+.city-page__lesson-card:focus-visible {
+  outline: 3px solid var(--lesson-accent, #e63946);
+  outline-offset: 2px;
+}
+
+.city-page__lesson-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.city-page__lesson-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #3a2d20;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.city-page__lesson-desc {
+  font-size: 0.82rem;
+  color: #7a6a58;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Completion badge ── */
+.city-page__lesson-badge {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.city-page__lesson-badge--complete {
+  background: #eafaf1;
+  color: #1e7e44;
+  border: 1px solid #a8dfc0;
+}
+
+.city-page__lesson-badge--continue {
+  background: var(--lesson-badge-bg, #fff0f1);
+  color: var(--lesson-badge-color, #e63946);
+  border: 1px solid var(--lesson-badge-border, #f5c6ca);
+}
+
+/* ── Responsive: stack objectives cards on narrow screens ── */
+@media (max-width: 500px) {
+  .city-page__objectives {
+    flex-direction: column;
+  }
+
+  .city-page__hero-name {
+    font-size: 1.9rem;
+  }
+}
+
+.lesson-stars {
+  font-size: 13px;
+  color: #caa820;
+  letter-spacing: 1px;
+  padding-top: 4px;
+}
+
+.cheatsheet-toggle {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  margin-top: 24px;
+  transition: background 0.15s;
+}
+.cheatsheet-toggle:hover { background: #f5f5f5; }
+
+.cheatsheet-body {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 16px;
+  margin-top: -2px;
+}
+
+.cheatsheet-topic {
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.cheatsheet-note {
+  color: #777;
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.cheatsheet-item {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.cheatsheet-item:last-child { border-bottom: none; margin-bottom: 0; }
+
+.cheatsheet-item-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #222;
+  margin: 0 0 6px;
+}
+
+.cheatsheet-item-explanation {
+  font-size: 13px;
+  color: #555;
+  margin: 0 0 8px;
+}
+
+.cheatsheet-item-examples {
+  padding-left: 18px;
+  margin: 0;
+}
+.cheatsheet-item-examples li {
+  font-size: 13px;
+  color: #444;
+  font-style: italic;
+  margin-bottom: 4px;
+}

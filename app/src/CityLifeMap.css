@@ -1,0 +1,113 @@
+.cl-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 360 / 460;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #eef3f7; /* fallback before the SVG paints */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.cl-map__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Pins ── */
+.cl-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cl-pin__badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: #fff;
+  border: 3px solid var(--accent, #3a7bd5);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s ease;
+}
+
+.cl-pin:hover .cl-pin__badge {
+  transform: rotate(-45deg) scale(1.08);
+}
+
+.cl-pin__icon {
+  transform: rotate(45deg);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.cl-pin--done .cl-pin__badge {
+  background: var(--accent, #3a7bd5);
+}
+
+.cl-pin__check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.journey-path {
+  animation: dash-flow 20s linear infinite;
+}
+
+@keyframes dash-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -200; }
+}
+
+.cl-pin__seq {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent, #3a7bd5);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cl-pin__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1a2e;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 1px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}

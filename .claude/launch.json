@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "app-dev",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5199", "-d", "/private/tmp/claude-501/-Users-joaokroth-Library-CloudStorage-OneDrive-Personal-Claude-Apps-German-travel-learn/57488299-9d5b-488a-950e-ca67647d40aa/scratchpad/dist"],
+      "port": 5199,
+      "autoPort": false
+    }
+  ]
+}

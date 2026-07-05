@@ -1,0 +1,63 @@
+/* CityMap — Leaflet map with emoji landmark pins */
+
+.city-map {
+  width: 100%;
+  height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(74, 55, 40, 0.14);
+  margin-bottom: 32px;
+  z-index: 0; /* keep below the back button / bottom nav */
+}
+
+/* Leaflet wraps our divIcon in .city-pin-wrap; the inner .city-pin is styled. */
+.city-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: #fff;
+  border: 2px solid #d0c4b4;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.city-pin__icon {
+  transform: rotate(45deg);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.city-pin--visited {
+  border-color: var(--pin-accent, #0055A4);
+  background: color-mix(in srgb, var(--pin-accent, #0055A4) 16%, #fff);
+}
+
+.city-pin--selected {
+  transform: rotate(-45deg) scale(1.25);
+  border-color: var(--pin-accent, #0055A4);
+  z-index: 1000;
+}
+
+.city-pin__check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pin-accent, #0055A4);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}

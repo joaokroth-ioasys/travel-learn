@@ -1,0 +1,172 @@
+/* ── Corner flag button (top-right of .map-container) ── */
+.flag-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+}
+
+/* ── Flag rendering ── */
+.flag {
+  display: flex;
+  width: 46px;
+  height: 30px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+.flag.flag-lg { width: 90px; height: 60px; }
+
+.flag i { flex: 1; display: block; }
+
+/* Germany: horizontal stripes */
+.flag-de { flex-direction: column; }
+.flag-de i:nth-child(1) { background: #000; }
+.flag-de i:nth-child(2) { background: #d00; }
+.flag-de i:nth-child(3) { background: #ffce00; }
+
+/* Monde: placeholder, solid blue (all three stripes blue) */
+.flag-wo i { background: #0d5fb0; }
+
+/* D2: world framed on Germany — reuse the German tricolor to signal the focus */
+.flag-d2 { flex-direction: column; }
+.flag-d2 i:nth-child(1) { background: #000; }
+.flag-d2 i:nth-child(2) { background: #d00; }
+.flag-d2 i:nth-child(3) { background: #ffce00; }
+
+/* F2: world framed on France — reuse the French tricolor to signal the focus */
+.flag-f2 { flex-direction: row; }
+.flag-f2 i:nth-child(1) { background: #0055a4; }
+.flag-f2 i:nth-child(2) { background: #fff; }
+.flag-f2 i:nth-child(3) { background: #ef4135; }
+
+/* France: vertical stripes */
+.flag-fr { flex-direction: row; }
+.flag-fr i:nth-child(1) { background: #0055a4; }
+.flag-fr i:nth-child(2) { background: #fff; }
+.flag-fr i:nth-child(3) { background: #ef4135; }
+
+/* Chile: white field, red lower band, blue canton with a white star */
+.flag-cl { position: relative; background: #fff; }
+.flag-cl .flag-cl-red {
+  position: absolute; left: 0; bottom: 0; width: 100%; height: 50%;
+  background: #d52b1e;
+}
+.flag-cl .flag-cl-canton {
+  position: absolute; left: 0; top: 0; width: 33.333%; height: 50%;
+  background: #0039a6;
+  display: flex; align-items: center; justify-content: center;
+}
+.flag-cl .flag-cl-star {
+  width: 62%; aspect-ratio: 1 / 1; background: #fff;
+  clip-path: polygon(50% 0%, 61.8% 35.5%, 98% 35.5%, 69% 57.3%, 80.9% 90.5%,
+    50% 70%, 19.1% 90.5%, 31% 57.3%, 2% 35.5%, 38.2% 35.5%);
+}
+
+/* Japan: white field, centred red disc */
+.flag-jp {
+  position: relative; background: #fff;
+  align-items: center; justify-content: center;
+}
+.flag-jp .flag-jp-disc {
+  flex: 0 0 auto;
+  width: 40%; aspect-ratio: 1 / 1; border-radius: 50%;
+  background: #bc002d;
+}
+
+
+/* ── Modal ── */
+.flag-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 30, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 24px;
+}
+
+.flag-modal {
+  background: #f5f0e8;
+  border-radius: 16px;
+  padding: 24px 28px 28px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.flag-modal h2 {
+  margin: 0 0 20px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #4a3728;
+}
+
+.flag-options {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+}
+
+.flag-options button {
+  /* Exactly 3 visible per view (2 gaps of 20px); rest scroll laterally. */
+  flex: 0 0 calc((100% - 40px) / 3);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-weight: 700;
+  color: #4a3728;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.flag-options button:hover {
+  border-color: #b8a888;
+  transform: translateY(-2px);
+}
+
+/* Blocked (no journey yet): greyed, locked, not pickable */
+.flag-options button.blocked {
+  position: relative;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.flag-options button.blocked:hover {
+  border-color: transparent;
+  transform: none;
+}
+.flag-options .flag-lock {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+}
+
+.flag-scroll-hint {
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8a7a5e;
+}
