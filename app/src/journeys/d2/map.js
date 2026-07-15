@@ -92,6 +92,8 @@ export default {
     {id: "zurich",     name: "Zürich",    accentColor: "#2c7873", step: 10, x: 3414.7, y: 658.1},
     {id: "luxembourg", name: "Luxembourg", accentColor: "#0a7e8c", step: 11, x: 3374.1, y: 610.2},
   ],
+  // On-map twin of France's "Frankfurt" marker: jump to the French journey.
+  links: [{ to: 'f2', label: 'Paris', x: 3356, y: 658, accentColor: '#0055A4' }],
   mainPath: countryFillPath,
   countryFill: countryFillPath,
   mainFill: '#e8dcc8',

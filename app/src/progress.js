@@ -43,6 +43,32 @@ export function saveGlobal(name, value) {
 // Local date as YYYY-MM-DD, used for daily-challenge and streak keys.
 export const todayStr = () => new Date().toISOString().split('T')[0];
 
+// Whole-day gap between two YYYY-MM-DD strings (b - a). Used by the streak
+// logic to tell "yesterday" (1) from "missed a day" (2) etc.
+// ponytail: parses as UTC midnight so DST never shifts the count.
+export function daysBetween(a, b) {
+  const day = 86400000;
+  return Math.round((Date.parse(b) - Date.parse(a)) / day);
+}
+
+// Advance a streak on a completion today. Returns the next streak object.
+//   same day        → unchanged (already counted today)
+//   yesterday       → +1
+//   2-day gap + a freeze banked → keep count, consume the freeze
+//   otherwise       → reset to 1
+// A freeze is banked every 7 days (freezeUsedOn tracks the last spend).
+export function advanceStreak(streak, today) {
+  const { count = 0, lastDate = null, freezeUsedOn = null } = streak || {};
+  if (lastDate === today) return streak;
+  const gap = lastDate ? daysBetween(lastDate, today) : Infinity;
+  if (gap === 1) return { count: count + 1, lastDate: today, freezeUsedOn };
+  const hasFreeze = count >= 7 && freezeUsedOn !== lastDate;
+  if (gap === 2 && hasFreeze) {
+    return { count: count + 1, lastDate: today, freezeUsedOn: today };
+  }
+  return { count: 1, lastDate: today, freezeUsedOn: null };
+}
+
 // One-shot migration: rename the legacy `german-*` keys to the namespaced
 // scheme so existing players keep their progress. Runs once.
 (function migrateLegacyKeys() {

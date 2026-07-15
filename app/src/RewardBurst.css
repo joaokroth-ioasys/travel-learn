@@ -1,0 +1,107 @@
+.reward-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Floating "+XP" — rises from center-top and fades. */
+.reward-xp {
+  position: absolute;
+  top: 18%;
+  font-size: 30px;
+  font-weight: 900;
+  color: #e9a23b;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  animation: reward-xp-rise 1.2s ease-out forwards;
+}
+
+.reward-xp-tag {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #caa820;
+  margin-top: 2px;
+}
+
+/* Stamp-earned line — sits under the +XP float. */
+.reward-stamp {
+  position: absolute;
+  top: 30%;
+  font-size: 20px;
+  font-weight: 800;
+  color: #6e1426;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  animation: reward-xp-rise 1.4s ease-out forwards;
+}
+
+@keyframes reward-xp-rise {
+  0%   { transform: translateY(20px) scale(0.8); opacity: 0; }
+  20%  { transform: translateY(0) scale(1.05);   opacity: 1; }
+  70%  { transform: translateY(-6px) scale(1);   opacity: 1; }
+  100% { transform: translateY(-34px) scale(1);  opacity: 0; }
+}
+
+/* Level-up / streak card. */
+.reward-card {
+  position: relative;
+  padding: 22px 34px;
+  border-radius: 18px;
+  background: #3a2d20;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  animation: reward-card-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes reward-card-pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.reward-card-title { font-size: 24px; font-weight: 800; margin: 0 0 4px; }
+.reward-card-sub   { font-size: 14px; color: rgba(255, 255, 255, 0.6); margin: 0; }
+
+/* Confetti — same shape as the passport completion burst. */
+.reward-card .confetti {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 80px;
+  pointer-events: none;
+}
+.reward-card .confetti-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  top: 0;
+  left: calc(var(--i) * 17px);
+  animation: confettiFall 1.6s ease-in forwards;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg);  opacity: 1; }
+  100% { transform: translateY(70px)  rotate(400deg); opacity: 0; }
+}
+.confetti-dot--0 { background: #3a7bd5; }
+.confetti-dot--1 { background: #d4820a; }
+.confetti-dot--2 { background: #2d7a4f; }
+.confetti-dot--3 { background: #c0392b; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reward-xp { animation: reward-xp-fade 1.2s ease-out forwards; }
+  .reward-card { animation: none; }
+  .reward-card .confetti-dot { animation: none; opacity: 0; }
+}
+@keyframes reward-xp-fade {
+  0%, 80% { opacity: 1; }
+  100%    { opacity: 0; }
+}

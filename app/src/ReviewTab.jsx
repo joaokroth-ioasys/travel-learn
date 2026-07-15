@@ -31,7 +31,7 @@ function countDue(srs, cards) {
   }).length;
 }
 
-export default function ReviewTab({ content, journeyId = 'de' }) {
+export default function ReviewTab({ content, journeyId = 'd2' }) {
   const allCards = useMemo(() => buildCards(content), [content]);
   const [srs, setSRS] = useState(() => load(journeyId, 'srs', {}));
   const [flipped, setFlipped] = useState(false);

@@ -43,7 +43,7 @@ export const STAMP_META = {
 
 // Per-country passport "chrome" — the static text on the booklet.
 export const PASSPORTS = {
-  de: {
+  d2: {
     name: 'Deutschland',
     eu: 'EUROPÄISCHE UNION',
     emblem: '🦅',
@@ -92,8 +92,9 @@ export const PASSPORTS = {
     completeText: '🎉 Voyage Terminé !',
     completeSub: 'Toutes les villes tamponnées ! Félicitations !',
   },
-  cl: {
+  c2: {
     name: 'Chile',
+    img: 'cl',   // loads /passport/cl-flag.png + cl-stamp.png (kept from the old cl pack)
     eu: 'REPÚBLICA DE CHILE',
     emblem: '⭐',
     coverType: 'PASAPORTE',
@@ -116,8 +117,9 @@ export const PASSPORTS = {
     completeText: '🎉 ¡Viaje Completado!',
     completeSub: '¡Todas las ciudades selladas! ¡Felicitaciones!',
   },
-  jp: {
+  j2: {
     name: 'Japan',
+    img: 'jp',   // loads /passport/jp-flag.png + jp-stamp.png (kept from the old jp pack)
     eu: 'NATION OF JAPAN',
     emblem: '🏵️',
     coverType: '旅券',
@@ -142,9 +144,13 @@ export const PASSPORTS = {
   },
 }
 
+// f2 (world map framed on France) reuses the France passport and its stamp art
+// (img: 'fr' → PassportTab loads /passport/fr* assets instead of non-existent f2 ones).
+PASSPORTS.f2 = { ...PASSPORTS.fr, img: 'fr' };
+
 // Cities that have a real cropped stamp / flag image in /public/passport.
 // Others (Wien, Zürich, Bruxelles — not in the national stamp sheets) keep their emoji.
 export const STAMPED_IMG = {
-  de: new Set(['frankfurt', 'stuttgart', 'munich', 'berlin', 'hamburg', 'cologne', 'dresden', 'nuremberg']),
+  d2: new Set(['frankfurt', 'stuttgart', 'munich', 'berlin', 'hamburg', 'cologne', 'dresden', 'nuremberg']),
   fr: new Set(['paris', 'strasbourg', 'lyon', 'nice', 'marseille', 'toulouse', 'bordeaux', 'nantes', 'lille']),
 }

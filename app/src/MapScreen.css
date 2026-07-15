@@ -134,11 +134,17 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .map-svg--ne, .map-svg--sw, .map-svg--fade { animation: none; }
+  .city-glow, .journey-path { animation: none; }
 }
 
 /* ── Journey path ─────────────────────────────────────────────────────────── */
 .journey-path {
   animation: dash-flow 80s linear infinite;
+  opacity: 0.55;
+}
+
+.journey-path--done {
+  opacity: 0.9;
 }
 
 @keyframes dash-flow {
@@ -170,6 +176,19 @@
   opacity: 0.88;
 }
 
+/* Locked stops — greyed out and not interactive until reached */
+.city-group--locked {
+  cursor: default;
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+.city-group--locked:hover {
+  filter: grayscale(1);           /* cancel the brightness/hover glow */
+}
+.city-group--locked:hover .city-dot {
+  transform: none;                /* no hover pop on locked dots */
+}
+
 /* Dot hover scale - applied to the circle via SVG transform */
 .city-group:hover .city-dot {
   transform-box: fill-box;
@@ -187,6 +206,37 @@
 @keyframes glow-pulse {
   0%, 100% { r: 10; opacity: 0.35; }
   50%       { r: 14; opacity: 0.65; }
+}
+
+/* ── Continue CTA ─── floats bottom-right over the map, above the progress strip */
+.map-continue {
+  position: absolute;
+  right: 12px;
+  bottom: 52px;
+  z-index: 6;
+  max-width: 45%;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #e9a23b, #f4a261);
+  color: #3a2d20;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(74, 55, 40, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.map-continue:hover { box-shadow: 0 4px 16px rgba(74, 55, 40, 0.45); }
+.map-continue:active { transform: scale(0.97); }
+.map-continue--done {
+  background: #2d7a4f;
+  color: #fff;
+  cursor: default;
+  box-shadow: none;
 }
 
 /* ── Bottom progress strip ────────────────────────────────────────────────── */
@@ -241,7 +291,9 @@
   box-sizing: border-box;
 }
 
-.streak-badge { color: #e05; }
+.streak-badge { color: #e05; display: inline-flex; align-items: baseline; gap: 6px; }
+.streak-badge--at-risk { color: #d4820a; }
+.streak-nudge { font-size: 10px; font-weight: 700; opacity: 0.85; }
 .xp-badge { color: #3a7bd5; }
 
 /* ── City dot gold state ──────────────────────────────────────────────────── */

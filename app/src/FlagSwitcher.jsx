@@ -5,7 +5,7 @@ import './FlagSwitcher.css'
 // cl = white field + red lower band + blue canton with a white star,
 // jp = white field + centred red disc.
 function Flag({ country, size }) {
-  if (country === 'cl') {
+  if (country === 'c2') {
     return (
       <span className={`flag flag-cl ${size || ''}`} aria-hidden="true">
         <i className="flag-cl-red" />
@@ -13,15 +13,17 @@ function Flag({ country, size }) {
       </span>
     )
   }
-  if (country === 'jp') {
+  if (country === 'j2') {
     return (
       <span className={`flag flag-jp ${size || ''}`} aria-hidden="true">
         <i className="flag-jp-disc" />
       </span>
     )
   }
+  // World-framed variants reuse the base country's flag styling.
+  const c = { f2: 'fr' }[country] || country
   return (
-    <span className={`flag flag-${country} ${size || ''}`} aria-hidden="true">
+    <span className={`flag flag-${c} ${size || ''}`} aria-hidden="true">
       <i /><i /><i />
     </span>
   )
@@ -40,14 +42,13 @@ export default function FlagSwitcher({ journey, onSelect, available }) {
 
   // Sorted alphabetically by label.
   const journeys = [
-    { code: 'cl', label: 'Chile' },
-    { code: 'fr', label: 'France' },
-    { code: 'de', label: 'Germany' },
-    { code: 'jp', label: 'Japan' },
+    { code: 'c2', label: 'Chile' },   // c2 is the Chile journey (cl retired from the UI)
+    { code: 'j2', label: 'Japan' },   // j2 is the Japan journey (jp retired from the UI)
     { code: 'wo', label: 'Monde' },
-    { code: 'd2', label: 'D2' },
-    { code: 'f2', label: 'F2' },
-  ].sort((a, b) => a.label.localeCompare(b.label))
+    { code: 'd2', label: 'Germany' },
+    { code: 'f2', label: 'France' },   // f2 is the France journey (fr retired from the UI)
+  ]
+    .sort((a, b) => a.label.localeCompare(b.label))
 
   return (
     <>

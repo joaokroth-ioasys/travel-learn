@@ -55,3 +55,123 @@
   cursor: pointer;
   padding: 4px 0;
 }
+
+/* ── Aggregate progress ── */
+.cl-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cl-progress-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #5a5a78;
+  white-space: nowrap;
+}
+.cl-progress-bar {
+  flex: 1;
+  height: 7px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cl-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a7bd5, #6aa0e8);
+  border-radius: 8px;
+  transition: width 0.5s ease;
+}
+
+/* ── Direction + saved-phrase actions ── */
+.cl-actions {
+  display: flex;
+  gap: 8px;
+}
+.cl-next {
+  flex: 1;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #3a7bd5, #6aa0e8);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(58, 123, 213, 0.35);
+  transition: transform 0.12s ease;
+}
+.cl-next:active { transform: scale(0.985); }
+.cl-next--done {
+  background: #2d7a4f;
+  cursor: default;
+  box-shadow: none;
+}
+.cl-saved-btn {
+  padding: 11px 14px;
+  border: 1px solid #e0567a;
+  border-radius: 12px;
+  background: #fff;
+  color: #e0567a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── Collectible strip ── */
+.cl-collect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.cl-chip {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 17px;
+  background: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+.cl-chip--done {
+  filter: none;
+  opacity: 1;
+  border-color: var(--accent, #3a7bd5);
+}
+.cl-chip--gold {
+  border-color: #e6b422;
+  box-shadow: 0 0 8px 1px rgba(230, 180, 34, 0.55);
+}
+
+/* ── Saved phrases review ── */
+.cl-saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cl-saved-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.cl-saved-place { font-size: 11px; font-weight: 700; color: #7a7a96; }
+.cl-saved-native { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+.cl-saved-romaji { font-size: 12px; color: #9a9ab0; font-style: italic; }
+.cl-saved-hint { font-size: 11px; color: #b0b0c4; }
+.cl-saved-en { font-size: 14px; color: #3a7bd5; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-progress-fill, .cl-next { transition: none; }
+}

@@ -44,7 +44,8 @@ export default function WikiPhoto({ photo, cityIcon, accentColor, darkAccent }) 
       {src === undefined ? (
         <div className="city-page__photo-loading" aria-hidden="true" />
       ) : src ? (
-        <img className="city-page__photo-img" src={src} alt={photo.alt} loading="lazy" />
+        <img className="city-page__photo-img" src={src} alt={photo.alt} loading="lazy"
+          style={photo.fit ? { objectFit: photo.fit } : undefined} />
       ) : (
         <div
           className="city-page__photo-fallback"

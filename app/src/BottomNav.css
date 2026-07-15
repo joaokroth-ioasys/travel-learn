@@ -51,3 +51,20 @@
 .bottom-nav-btn.active .bnav-icon {
   filter: drop-shadow(0 0 4px rgba(0,0,0,0.15));
 }
+
+/* ponytail: dev/demo "completed_user" toggle, fixed top-right on every screen */
+.completed-user-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.72);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}

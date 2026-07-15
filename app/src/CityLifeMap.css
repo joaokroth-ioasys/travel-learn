@@ -58,6 +58,15 @@
   background: var(--accent, #3a7bd5);
 }
 
+.cl-pin--gold .cl-pin__badge {
+  border-color: #e6b422;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25), 0 0 10px 2px rgba(230, 180, 34, 0.6);
+}
+.cl-pin--gold .cl-pin__check {
+  background: #e6b422;
+  color: #3a2d20;
+}
+
 .cl-pin__check {
   position: absolute;
   top: -6px;

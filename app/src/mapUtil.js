@@ -2,6 +2,9 @@
 
 export function parseVB(s) { return s.split(/\s+/).map(Number); }
 
+// Lerp two [x, y, w, h] viewBoxes — the pan-zoom between two journey frames.
+export function lerpVB(a, b, k) { return a.map((v, i) => v + (b[i] - v) * k); }
+
 // The outer ring of the main country path (first subpath), used as its fill.
 // Falls back to an explicit `countryFill` path when the map provides one.
 export function countryFillPath(map) {
@@ -31,6 +34,25 @@ export function getTotalCounts(cities, completedLessons) {
     0,
   );
   return { done, total };
+}
+
+// Linear path gating: which cities are reachable yet.
+//   'done'    – every lesson complete
+//   'current' – the next unfinished stop on the route (the one to play)
+//   'locked'  – a later stop whose predecessor isn't done yet
+//   'open'    – not gated at all (preview/link dots, or map-only cities with
+//               no lessons) — always clickable.
+// ponytail: journeys are linear by `step`; branch gating would need a graph.
+export function getCityStatus(cities, city, completedLessons) {
+  if (city.preview || city.lessons.length === 0) return 'open';
+  const isDone = (c) => getCityLessonCounts(c, completedLessons).done === c.lessons.length;
+  const route = cities
+    .filter((c) => !c.preview && c.lessons.length > 0)
+    .sort((a, b) => a.step - b.step);
+  const firstIncomplete = route.find((c) => !isDone(c));
+  if (!firstIncomplete) return 'done';                 // whole route complete
+  if (city.id === firstIncomplete.id) return 'current';
+  return isDone(city) ? 'done' : 'locked';
 }
 
 export function getCityStarState(city, stars) {

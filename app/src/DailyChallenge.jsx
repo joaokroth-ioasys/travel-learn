@@ -37,7 +37,7 @@ function formatDate(dateStr) {
   });
 }
 
-export default function DailyChallenge({ content, journeyId = 'de', onXpEarned }) {
+export default function DailyChallenge({ content, journeyId = 'd2', onXpEarned }) {
   const today = todayStr();
   const storageKey = `journey:${journeyId}:daily-${today}`;
 

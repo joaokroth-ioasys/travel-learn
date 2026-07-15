@@ -1039,12 +1039,15 @@ export default {
     {id: "rome", name: "Roma", accentColor: "#009246", country: "Italia", preview: true, x: 3478.2, y: 766.8},
     {id: "milano", name: "Milano", accentColor: "#8B0000", country: "Italia", preview: true, x: 3424.9, y: 695.4},
   ],
-  mainPath: countryFillPath,
+  // No highlight on the Monde map: France's fill still blends (countryFill), but its
+  // outline draws as a soft neighbour border (see outerPaths) instead of the dark main
+  // outline, so it matches every other country. mainPath: '' → no highlight stroke.
+  mainPath: '',
   countryFill: countryFillPath,
   mainFill: '#F0EADE',
   landFill: '#F0EADE',
   seaPath,
   landIslands: land,
-  outerPaths: neighbourBorders,
+  outerPaths: [...neighbourBorders, countryFillPath],
   statePaths: countryRegions,
 };

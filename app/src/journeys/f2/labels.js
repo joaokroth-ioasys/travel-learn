@@ -1,4 +1,4 @@
 export default {
-  title: 'Le Monde — centré sur la France',
+  title: 'En Voyage : Apprendre le Français',
   langName: 'French',
 };

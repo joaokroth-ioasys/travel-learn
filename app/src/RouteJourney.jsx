@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import WikiPhoto from './WikiPhoto';
 import CityMap from './CityMap';
+import { stageStatus } from './citylifeUtil';
 import { darkenHex, hexToRgba } from './colors';
 import './RouteJourney.css';
 
@@ -27,6 +28,7 @@ export default function RouteJourney({
   completedLessons, routeDone, favorites,
   onLessonSelect, onStageComplete, onToggleFavorite,
   showMap = true, // City Life stages have no real coords → hide the geo map
+  gated = false,  // lock stages until the previous one is solved (City Life)
 }) {
   const total = places.length;
 
@@ -34,6 +36,7 @@ export default function RouteJourney({
   const firstUnsolved = places.findIndex((p) => !routeDone.has(p.id));
   const [current, setCurrent] = useState(firstUnsolved === -1 ? 0 : firstUnsolved);
   const [answer, setAnswer] = useState(null); // chosen quiz option for current stage
+  const [missed, setMissed] = useState(() => new Set()); // stages with a wrong guess this session
 
   const stage = places[current];
 
@@ -56,12 +59,23 @@ export default function RouteJourney({
 
   function pick(option) {
     setAnswer(option);
-    if (option === stage.quiz.correct && !routeDone.has(stage.id)) {
-      onStageComplete(stage.id);
+    if (option !== stage.quiz.correct) {
+      setMissed((m) => new Set(m).add(stage.id)); // a wrong guess forfeits the first-try bonus
+      return;
+    }
+    if (!routeDone.has(stage.id)) {
+      onStageComplete(stage.id, !missed.has(stage.id));
     }
   }
 
-  const go = (i) => setCurrent(Math.max(0, Math.min(total - 1, i)));
+  const go = (i) => {
+    const clamped = Math.max(0, Math.min(total - 1, i));
+    if (gated && stageStatus(places, clamped, routeDone) === 'locked') return;
+    setCurrent(clamped);
+  };
+  // Next is blocked while the current stage is unsolved (gated only) — solve to advance.
+  const nextLocked = gated && current < total - 1
+    && stageStatus(places, current + 1, routeDone) === 'locked';
 
   return (
     <div className="route" style={vars}>
@@ -82,20 +96,23 @@ export default function RouteJourney({
         {places.map((p, i) => {
           const done = routeDone.has(p.id);
           const prevDone = i > 0 && routeDone.has(places[i - 1].id);
+          const locked = gated && stageStatus(places, i, routeDone) === 'locked';
           const cls = ['tl-node',
             done && 'tl-node--done',
             i === current && 'tl-node--current',
-            prevDone && 'tl-node--linkfill'].filter(Boolean).join(' ');
+            prevDone && 'tl-node--linkfill',
+            locked && 'tl-node--locked'].filter(Boolean).join(' ');
           return (
             <button
               key={p.id}
               className={cls}
               role="tab"
               aria-selected={i === current}
-              aria-label={`Stop ${i + 1}: ${p.name}${done ? ', explored' : ''}`}
+              aria-label={`Stop ${i + 1}: ${p.name}${done ? ', explored' : locked ? ', locked' : ''}`}
               onClick={() => go(i)}
+              disabled={locked}
             >
-              <span className="tl-node__circle">{p.icon}</span>
+              <span className="tl-node__circle">{locked ? '🔒' : p.icon}</span>
               <span className="tl-node__label">{p.name}</span>
               {favorites.has(p.id) && <span className="tl-node__fav" aria-hidden="true">♥</span>}
             </button>
@@ -113,7 +130,7 @@ export default function RouteJourney({
       <div className="stage" key={stage.id}>
         <div className="stage__photo">
           <WikiPhoto
-            photo={{ src: stage.image, wikiTitle: stage.wikiTitle, alt: stage.name, caption: stage.name }}
+            photo={{ src: stage.image, wikiTitle: stage.wikiTitle, alt: stage.name, caption: stage.name, fit: stage.fit }}
             cityIcon={stage.icon}
             accentColor={accentColor}
             darkAccent={darkAccent}
@@ -194,8 +211,8 @@ export default function RouteJourney({
         <button className="stage-nav__btn" onClick={() => go(current - 1)} disabled={current === 0}>
           ← Previous
         </button>
-        <button className="stage-nav__btn stage-nav__btn--next" onClick={() => go(current + 1)} disabled={current === total - 1}>
-          Next stop →
+        <button className="stage-nav__btn stage-nav__btn--next" onClick={() => go(current + 1)} disabled={current === total - 1 || nextLocked}>
+          {nextLocked ? 'Solve to continue' : 'Next stop →'}
         </button>
       </div>
 

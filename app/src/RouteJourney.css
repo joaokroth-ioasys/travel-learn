@@ -121,6 +121,14 @@
 }
 .tl-node--current .tl-node__label { color: var(--accent, #0055A4); font-weight: 700; }
 
+/* Locked stop — not reachable until the previous one is solved */
+.tl-node--locked {
+  filter: grayscale(1);
+  opacity: 0.45;
+  cursor: default;
+}
+.tl-node--locked .tl-node__circle { border-color: #b9b0a4; }
+
 .tl-node__fav {
   position: absolute;
   top: -4px;

@@ -7,24 +7,30 @@ import Onboarding from './Onboarding'
 import DailyChallenge from './DailyChallenge'
 import PassportTab from './PassportTab'
 import CityLife from './CityLife'
+import RewardBurst from './RewardBurst'
 import journeys, { getJourney } from './journeys'
-import { load, save, loadGlobal, saveGlobal, todayStr } from './progress'
+import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
+import { isCompletedMode, enterCompletedMode, exitCompletedMode } from './completedUser'
+
+// Streak counts that deserve a celebration.
+const STREAK_MILESTONES = new Set([3, 7, 14, 30, 60, 100])
 import './BottomNav.css'
 
-// Journeys drawn from the same source basis (borders/eu-borders-4.md) can do the
-// continuous camera pan-zoom between them; others fall back to the CSS slide.
-const SHARED_BASIS = new Set(['fr', 'de'])
+// Journeys drawn from the same world-source basis can do the continuous viewBox
+// pan-zoom between them (f2 ↔ d2 ↔ c2 ↔ j2); others fall back to the CSS slide.
+const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2'])
 
 export default function App() {
   const [journey, setJourney] = useState(() => {
     const stored = loadGlobal('active-journey')
-    return journeys[stored] ? stored : 'de' // ignore a stale id (e.g. the old 'xx'/'test')
-  }) // 'fr' | 'de'
+    const id = stored === 'cl' ? 'c2' : stored === 'jp' ? 'j2' : stored   // cl→c2, jp→j2
+    return journeys[id] ? id : 'd2' // ignore a stale id (e.g. the old 'xx'/'test')
+  }) // 'fr' | 'd2'
   const [tab, setTab] = useState('map')           // 'map' | 'review' | 'daily'
   const [screen, setScreen] = useState('map')      // map | city | lesson
   const [selectedCity, setSelectedCity] = useState(null)
   const [selectedLesson, setSelectedLesson] = useState(null)
-  const [pan, setPan] = useState(null)             // {from, to} during a fr↔de camera pan
+  const [pan, setPan] = useState(null)             // {from, to} during an f2↔d2 viewBox pan
 
   // ── Per-journey progress (namespaced in localStorage by journey id) ──
   const [completedLessons, setCompletedLessons] = useState(() => new Set(load(journey, 'completed', [])))
@@ -33,6 +39,8 @@ export default function App() {
   const [stars, setStars] = useState(() => load(journey, 'stars', {}))
   const [routeDone, setRouteDone] = useState(() => new Set(load(journey, 'route', [])))   // explored route stage ids
   const [favorites, setFavorites] = useState(() => new Set(load(journey, 'favorites', []))) // favourited stage ids
+  const [perfect, setPerfect] = useState(() => new Set(load(journey, 'perfect', [])))       // stages solved first-try
+  const [rewardBurst, setRewardBurst] = useState(null)  // transient XP / level-up / streak celebration
 
   // Onboarded is global (not per-journey)
   const [onboarded, setOnboarded] = useState(() => loadGlobal('onboarded') === '1')
@@ -45,6 +53,7 @@ export default function App() {
     setStars(load(journey, 'stars', {}))
     setRouteDone(new Set(load(journey, 'route', [])))
     setFavorites(new Set(load(journey, 'favorites', [])))
+    setPerfect(new Set(load(journey, 'perfect', [])))
   }, [journey])
 
   useEffect(() => {
@@ -84,6 +93,25 @@ export default function App() {
     setScreen('lesson')
   }
 
+  // Add XP, persist it, and fire the reward burst (floating +XP, plus a
+  // level-up card when a 200-XP boundary is crossed). `extra` folds in other
+  // celebrations (e.g. a streak milestone) so one completion shows one burst.
+  function awardXp(amount, extra = {}) {
+    if (amount > 0) {
+      const next = xp + amount
+      setXp(next)
+      save(journey, 'xp', next)
+      setRewardBurst({
+        xp: amount,
+        leveledUp: Math.floor(next / 200) > Math.floor(xp / 200),
+        level: Math.floor(next / 200) + 1,
+        ...extra,
+      })
+    } else if (extra.streakMilestone || extra.leveledUp) {
+      setRewardBurst({ xp: 0, ...extra })
+    }
+  }
+
   function handleLessonComplete(lessonId, starCount) {
     const newCompleted = new Set(completedLessons)
     newCompleted.add(lessonId)
@@ -96,35 +124,46 @@ export default function App() {
       return next
     })
 
-    setXp(prev => {
-      const next = prev + 50 + (starCount === 3 ? 25 : 0)
-      save(journey, 'xp', next)
-      return next
-    })
+    // Advance the streak (grace-freeze aware) and note any milestone reached.
+    const nextStreak = advanceStreak(streak, todayStr())
+    if (nextStreak !== streak) { setStreak(nextStreak); save(journey, 'streak', nextStreak) }
+    const streakMilestone = nextStreak !== streak && STREAK_MILESTONES.has(nextStreak.count)
+      ? nextStreak.count : null
 
-    setStreak(prev => {
-      const today = todayStr()
-      const next = prev.lastDate === today ? prev : { count: (prev.count || 0) + 1, lastDate: today }
-      save(journey, 'streak', next)
-      return next
-    })
-
-    // Award city stamp if all lessons in the city are now complete.
+    // Award a city stamp if all its lessons are now complete, and flag the burst
+    // so earning a stamp is celebrated on the spot (half / all are bigger moments).
     // Stamps live only in storage; PassportTab reads them from there.
     const city = pack.content.find(c => c.lessons.some(l => l.id === lessonId))
+    let stampExtra = {}
     if (city && city.lessons.every(l => newCompleted.has(l.id))) {
       const stamps = load(journey, 'stamps', {})
-      if (!stamps[city.id]) save(journey, 'stamps', { ...stamps, [city.id]: todayStr() })
+      if (!stamps[city.id]) {
+        save(journey, 'stamps', { ...stamps, [city.id]: todayStr() })
+        const total = pack.content.length
+        const after = pack.content.filter(c => c.id === city.id || stamps[c.id]).length
+        stampExtra = {
+          stamp: city.name,
+          stampMilestone: after === total ? 'all' : after === Math.ceil(total / 2) ? 'half' : null,
+        }
+      }
     }
+
+    awardXp(50 + (starCount === 3 ? 25 : 0) + (stampExtra.stamp ? 20 : 0), { streakMilestone, ...stampExtra })
   }
 
-  // Solving a stage quiz marks it explored (+10 XP, once).
-  function handleStageComplete(stageId) {
+  // Solving a stage quiz marks it explored (+10 XP, once). Answering correctly
+  // on the first try earns a +5 mastery bonus and banks the stage as "perfect".
+  function handleStageComplete(stageId, firstTry = false) {
     if (routeDone.has(stageId)) return
     const next = new Set(routeDone); next.add(stageId)
     setRouteDone(next)
     save(journey, 'route', [...next])
-    setXp(prev => { const v = prev + 10; save(journey, 'xp', v); return v })
+    if (firstTry) {
+      const nextP = new Set(perfect); nextP.add(stageId)
+      setPerfect(nextP)
+      save(journey, 'perfect', [...nextP])
+    }
+    awardXp(firstTry ? 15 : 10, firstTry ? { perfect: true } : {})
   }
 
   function handleToggleFavorite(stageId) {
@@ -148,12 +187,15 @@ export default function App() {
   // Lesson view is full-screen, no bottom nav
   if (screen === 'lesson') {
     return (
-      <LessonView
-        content={pack.content}
-        lessonId={selectedLesson}
-        onComplete={handleLessonComplete}
-        onBack={handleBackToCity}
-      />
+      <>
+        <LessonView
+          content={pack.content}
+          lessonId={selectedLesson}
+          onComplete={handleLessonComplete}
+          onBack={handleBackToCity}
+        />
+        <RewardBurst burst={rewardBurst} onDone={() => setRewardBurst(null)} />
+      </>
     )
   }
 
@@ -182,21 +224,17 @@ export default function App() {
         <DailyChallenge
           content={pack.content}
           journeyId={journey}
-          onXpEarned={(amount) => {
-            setXp(prev => {
-              const next = prev + amount
-              save(journey, 'xp', next)
-              return next
-            })
-          }}
+          onXpEarned={(amount) => awardXp(amount)}
         />
       ) : tab === 'citylife' ? (
         <CityLife
           locations={pack.citylife}
+          mapImage={pack.citylifeMap}
           journey={journey}
           onJourneySelect={handleJourneySelect}
           routeDone={routeDone}
           favorites={favorites}
+          perfect={perfect}
           completedLessons={completedLessons}
           langName={pack.labels.langName}
           onStageComplete={handleStageComplete}
@@ -232,11 +270,24 @@ export default function App() {
           completedLessons={completedLessons}
           xp={xp}
           streak={streak}
+          streakAtRisk={streak.count > 0 && streak.lastDate != null && daysBetween(streak.lastDate, todayStr()) === 1}
           stars={stars}
           pan={pan}
           onPanDone={() => setPan(null)}
         />
       )}
+      <RewardBurst burst={rewardBurst} onDone={() => setRewardBurst(null)} />
+
+      {/* ponytail: dev/demo toggle — fill or restore all progress (see completedUser.js) */}
+      <button
+        className="completed-user-btn"
+        onClick={() => {
+          if (isCompletedMode()) exitCompletedMode(); else enterCompletedMode()
+          window.location.reload()
+        }}
+      >
+        {isCompletedMode() ? '✓ Completed' : 'Complete all'}
+      </button>
 
       <nav className="bottom-nav">
         <button

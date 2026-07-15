@@ -3,7 +3,7 @@ import FlagSwitcher from './FlagSwitcher';
 import MapPanOverlay from './MapPanOverlay';
 import usePanZoom from './usePanZoom';
 import {
-  buildMapCities, getCityLessonCounts, getTotalCounts,
+  buildMapCities, getCityLessonCounts, getTotalCounts, getCityStatus,
   getCityStarState, getCityAvgStars, countryFillPath,
 } from './mapUtil';
 import './MapScreen.css';
@@ -14,11 +14,11 @@ import './MapScreen.css';
 // south-west, Germany north-east. The switch reads like grabbing the map and
 // dragging it to the target: to reach Germany (NE) you pull the map down-left,
 // so fr→de the content slides down-left ('sw'); de→fr it slides up-right ('ne').
-const JOURNEY_POS = { fr: [0, 1], de: [1, 0] };
-// fr↔de are animated by the camera pan overlay, so the underlying svg must NOT
-// also run a CSS slide — otherwise the class flips back on (when pan clears) and
-// the drag keyframe replays as a "shake" at the end. 'none' has no CSS rule.
-const SHARED_BASIS = new Set(['fr', 'de']);
+const JOURNEY_POS = { f2: [0, 1], d2: [1, 0] };
+// Shared-basis journeys are animated by the pan overlay, so the underlying svg must NOT
+// also run a CSS slide — otherwise the class flips back on (when pan clears) and the drag
+// keyframe replays as a "shake" at the end. 'none' has no CSS rule.
+const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2']);
 function enterDirection(from, to) {
   if (SHARED_BASIS.has(from) && SHARED_BASIS.has(to)) return 'none';
   const a = JOURNEY_POS[from], b = JOURNEY_POS[to];
@@ -32,9 +32,9 @@ function enterDirection(from, to) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function MapScreen({
-  map, content, labels, journeyId = 'de',
+  map, content, labels, journeyId = 'd2',
   onCitySelect, onJourneySelect, completedLessons,
-  stars = {}, xp = 0, streak = { count: 0, lastDate: null },
+  stars = {}, xp = 0, streak = { count: 0, lastDate: null }, streakAtRisk = false,
   pan = null, onPanDone,
 }) {
   // Direction of the journey switch, computed in the SAME render that changes the
@@ -54,12 +54,22 @@ export default function MapScreen({
   const progressPct = grandTotal > 0 ? (totalDone / grandTotal) * 100 : 0;
   const level = Math.floor(xp / 200) + 1;
 
+  // Path gating status per city ('done' | 'current' | 'locked' | 'open').
+  const statusOf = Object.fromEntries(
+    cities.map((c) => [c.id, getCityStatus(cities, c, completedLessons)]),
+  );
+  const currentCity = cities.find((c) => statusOf[c.id] === 'current');
+  const allComplete = grandTotal > 0 && totalDone === grandTotal;
+
   // Journey path – city positions in story order.
-  const journeyPoints = cities
+  const routeCities = cities
     .filter((c) => !c.preview)   // preview dots (e.g. Argentina) aren't on the route
-    .sort((a, b) => a.step - b.step)
-    .map((c) => `${c.x},${c.y}`)
-    .join(' ');
+    .sort((a, b) => a.step - b.step);
+  const journeyPoints = routeCities.map((c) => `${c.x},${c.y}`).join(' ');
+  // Solid "travelled" overlay: the prefix up to and including the current stop.
+  const currentIdx = routeCities.findIndex((c) => statusOf[c.id] === 'current');
+  const traveled = currentIdx === -1 ? routeCities : routeCities.slice(0, currentIdx + 1);
+  const traveledPoints = traveled.map((c) => `${c.x},${c.y}`).join(' ');
 
   const [bgX, bgY, bgW, bgH] = map.viewBox.split(/\s+/).map(Number);
   const markersOnly = map.markersOnly;  // wo: plain markers — no country label / lesson badge
@@ -81,8 +91,9 @@ export default function MapScreen({
   return (
     <div className="map-screen">
       <div className="map-header-stats">
-        <span className="streak-badge">
+        <span className={`streak-badge${streakAtRisk ? ' streak-badge--at-risk' : ''}`}>
           {streak.count > 0 ? `🔥 ${streak.count}` : ''}
+          {streakAtRisk && <span className="streak-nudge">keep it alive today!</span>}
         </span>
         <span className="xp-badge">Lv.{level} · {xp} XP</span>
       </div>
@@ -193,7 +204,7 @@ export default function MapScreen({
             />
           </g>
 
-          {/* ── Journey path (animated dashed polyline) ── */}
+          {/* ── Journey path (animated dashed polyline — the full, faint route) ── */}
           <polyline
             className="journey-path"
             points={journeyPoints}
@@ -204,6 +215,18 @@ export default function MapScreen({
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {/* Solid overlay for the stretch already travelled (up to the current stop). */}
+          {traveled.length > 1 && (
+            <polyline
+              className="journey-path--done"
+              points={traveledPoints}
+              fill="none"
+              stroke="#e9a23b"
+              strokeWidth={1.4}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
 
           {/* ── City markers ── */}
           {cities.map((city) => {
@@ -215,33 +238,39 @@ export default function MapScreen({
             const avgStars   = getCityAvgStars(city, stars);
             const isGold     = starState === 'gold';
             const isStarted  = starState === 'started';
+            const status     = statusOf[city.id];
+            const isLocked   = status === 'locked';
+            const isCurrent  = status === 'current';
             // Abroad preview dots (e.g. Argentina) stay off the numbered route, but
             // once they have content (lessons merged in) their page is reachable.
-            const clickable  = !city.preview || hasLessons;
+            // Locked stops (predecessor not finished) aren't clickable yet.
+            const clickable  = (!city.preview || hasLessons) && !isLocked;
 
             return (
               <g
                 key={city.id}
-                className={`city-group${isAbroad ? ' city-abroad' : ''}`}
+                className={`city-group${isAbroad ? ' city-abroad' : ''}${isLocked ? ' city-group--locked' : ''}${isCurrent ? ' city-group--current' : ''}`}
                 style={{ '--accent': city.accentColor }}
                 transform={cityScale === 1 ? undefined
                   : `translate(${city.x} ${city.y}) scale(${cityScale}) translate(${-city.x} ${-city.y})`}
                 onClick={() => clickable && onCitySelect(city.id)}
                 role={clickable ? 'button' : undefined}
                 tabIndex={clickable ? 0 : undefined}
-                aria-label={`${city.name}${city.country ? ` (${city.country})` : ''}${city.preview ? '' : `, step ${city.step}`}${hasLessons ? `, ${done} of ${total} lessons completed` : ''}`}
+                aria-label={`${city.name}${city.country ? ` (${city.country})` : ''}${city.preview ? '' : `, step ${city.step}`}${isLocked ? ', locked' : ''}${hasLessons ? `, ${done} of ${total} lessons completed` : ''}`}
                 onKeyDown={(e) => e.key === 'Enter' && clickable && onCitySelect(city.id)}
               >
-                {/* Pulsing glow ring */}
-                <circle
-                  className="city-glow"
-                  cx={city.x}
-                  cy={city.y}
-                  r={allDone ? 13 : 10}
-                  fill="none"
-                  stroke={city.accentColor}
-                  strokeWidth="2"
-                />
+                {/* Pulsing glow ring — only the current stop pulses, to point the way */}
+                {isCurrent && (
+                  <circle
+                    className="city-glow"
+                    cx={city.x}
+                    cy={city.y}
+                    r={10}
+                    fill="none"
+                    stroke={city.accentColor}
+                    strokeWidth="2"
+                  />
+                )}
 
                 {/* Progress ring for started cities */}
                 {isStarted && !isGold && (
@@ -297,7 +326,8 @@ export default function MapScreen({
                   </text>
                 )}
 
-                {/* Step number badge (route cities only; preview dots have no step) */}
+                {/* Step number badge (route cities only; preview dots have no step).
+                    Locked stops show a 🔒 in the same slot instead of the number. */}
                 {!city.preview && (
                   <>
                     <circle
@@ -305,19 +335,19 @@ export default function MapScreen({
                       cy={city.y - 10}
                       r="7"
                       fill="#fff"
-                      stroke={city.accentColor}
+                      stroke={isLocked ? '#9a9285' : city.accentColor}
                       strokeWidth="1.5"
                     />
                     <text
                       x={city.x + 10}
                       y={city.y - 10 + 4}
                       textAnchor="middle"
-                      fontSize="8"
+                      fontSize={isLocked ? 7 : 8}
                       fontWeight="800"
                       fill={city.accentColor}
                       style={{ pointerEvents: 'none', userSelect: 'none' }}
                     >
-                      {city.step}
+                      {isLocked ? '🔒' : city.step}
                     </text>
                   </>
                 )}
@@ -421,6 +451,8 @@ export default function MapScreen({
               tabIndex={0}
               aria-label={`${link.label}, ir para a outra jornada`}
               onKeyDown={(e) => e.key === 'Enter' && onJourneySelect(link.to)}
+              transform={cityScale === 1 ? undefined
+                : `translate(${link.x} ${link.y}) scale(${cityScale}) translate(${-link.x} ${-link.y})`}
             >
               <circle cx={link.x} cy={link.y} r="7" fill={link.accentColor} stroke="#fff" strokeWidth="2" />
               <rect x={link.x - 28} y={link.y + 13} width="56" height="15" rx="7" fill="rgba(255,255,255,0.9)" stroke="rgba(184,168,136,0.6)" strokeWidth="0.8" />
@@ -449,6 +481,18 @@ export default function MapScreen({
         {/* ── Cinematic camera pan-zoom (fr↔de), over the settled destination ── */}
         {pan && (
           <MapPanOverlay key={`${pan.from}-${pan.to}`} from={pan.from} to={pan.to} onDone={onPanDone} />
+        )}
+
+        {/* ── Continue CTA — points the player at their current stop ── */}
+        {(currentCity || allComplete) && (
+          <button
+            type="button"
+            className={`map-continue${allComplete ? ' map-continue--done' : ''}`}
+            disabled={allComplete}
+            onClick={() => currentCity && onCitySelect(currentCity.id)}
+          >
+            {allComplete ? 'Journey complete 🎉' : `Next city: ${currentCity.name}`}
+          </button>
         )}
 
         {/* ── Bottom progress strip ── */}
