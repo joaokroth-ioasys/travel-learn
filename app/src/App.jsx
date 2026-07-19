@@ -4,7 +4,6 @@ import CityPage from './CityPage'
 import LessonView from './LessonView'
 import ReviewTab from './ReviewTab'
 import Onboarding from './Onboarding'
-import DailyChallenge from './DailyChallenge'
 import PassportTab from './PassportTab'
 import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
@@ -29,7 +28,7 @@ export default function App() {
     const id = stored === 'cl' ? 'c2' : stored === 'jp' ? 'j2' : stored === 'fr' ? 'f2' : stored   // cl→c2, jp→j2, fr→f2
     return journeys[id] ? id : 'd2' // ignore a stale id (e.g. the old 'xx'/'test')
   }) // 'f2' | 'd2'
-  const [tab, setTab] = useState('map')           // 'map' | 'review' | 'daily'
+  const [tab, setTab] = useState('map')           // 'map' | 'review'
   const [screen, setScreen] = useState('map')      // map | city | lesson
   const [selectedCity, setSelectedCity] = useState(null)
   const [selectedLesson, setSelectedLesson] = useState(null)
@@ -229,7 +228,7 @@ export default function App() {
     if (t === 'map') {
       // stay on current map/city screen
     } else {
-      // leave city screen when switching to review or daily
+      // leave city screen when switching to review
       setScreen('map')
     }
   }
@@ -245,12 +244,6 @@ export default function App() {
     <>
       {tab === 'review' ? (
         <ReviewTab content={pack.content} journeyId={journey} />
-      ) : tab === 'daily' ? (
-        <DailyChallenge
-          content={pack.content}
-          journeyId={journey}
-          onXpEarned={(amount) => awardXp(amount)}
-        />
       ) : tab === 'citylife' ? (
         <CityLife
           locations={pack.citylife}
@@ -325,13 +318,6 @@ export default function App() {
         >
           <span className="bnav-icon">🗺️</span>
           <span className="bnav-label">Map</span>
-        </button>
-        <button
-          className={`bottom-nav-btn${tab === 'daily' ? ' active' : ''}`}
-          onClick={() => handleTabSwitch('daily')}
-        >
-          <span className="bnav-icon">📅</span>
-          <span className="bnav-label">Daily</span>
         </button>
         <button
           className={`bottom-nav-btn${tab === 'citylife' ? ' active' : ''}`}
