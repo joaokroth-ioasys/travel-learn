@@ -4,10 +4,15 @@
 create table if not exists users (
   id            uuid primary key default gen_random_uuid(),
   email         text unique not null,
-  password_hash text not null,
+  google_sub    text unique,
+  password_hash text,               -- nullable: Google sign-in leaves it empty
   display_name  text not null,
   created_at    timestamptz default now()
 );
+
+-- Migration for an existing DB (safe to run repeatedly):
+--   alter table users add column if not exists google_sub text unique;
+--   alter table users alter column password_hash drop not null;
 
 -- One row per user+journey. The whole per-journey progress blob is stored as
 -- JSONB (mirrors the localStorage keys) — no need to normalize xp/streak/stars.

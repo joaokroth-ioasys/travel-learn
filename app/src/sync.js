@@ -62,19 +62,17 @@ export async function pull() {
   } catch { /* offline — keep local */ }
 }
 
-async function authRequest(path, body) {
-  const res = await fetch(`${API}${path}`, {
+// Exchange a Google ID token (from the "Sign in with Google" button) for our app JWT.
+export async function googleLogin(credential) {
+  const res = await fetch(`${API}/auth/google`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ credential }),
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error || 'Request failed');
+  if (!res.ok) throw new Error(json.error || 'Sign-in failed');
   setToken(json.token);
 }
-
-export const signup = (email, password, displayName) => authRequest('/auth/signup', { email, password, displayName });
-export const login = (email, password) => authRequest('/auth/login', { email, password });
 
 export async function fetchLeaderboard() {
   if (!API) return [];

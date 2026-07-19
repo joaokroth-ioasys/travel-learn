@@ -1,10 +1,7 @@
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET;
 
-export const hashPassword = (plain) => bcrypt.hash(plain, 10);
-export const verifyPassword = (plain, hash) => bcrypt.compare(plain, hash);
 export const signToken = (userId) => jwt.sign({ sub: userId }, SECRET, { expiresIn: '30d' });
 
 // Serverless functions can't share Express middleware, so each protected

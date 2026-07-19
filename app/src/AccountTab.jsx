@@ -1,14 +1,31 @@
-import { useState, useEffect } from 'react'
-import { isConfigured, isLoggedIn, login, signup, logout, pull, fetchLeaderboard } from './sync'
+import { useState, useEffect, useRef } from 'react'
+import { isConfigured, isLoggedIn, googleLogin, logout, pull, fetchLeaderboard } from './sync'
+
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const GSI_SRC = 'https://accounts.google.com/gsi/client'
+
+// Load the Google Identity Services script once, resolve when window.google is ready.
+let gsiPromise = null
+function loadGsi() {
+  if (gsiPromise) return gsiPromise
+  gsiPromise = new Promise((resolve, reject) => {
+    if (window.google?.accounts?.id) return resolve()
+    const s = document.createElement('script')
+    s.src = GSI_SRC; s.async = true
+    s.onload = resolve; s.onerror = () => reject(new Error('Could not load Google sign-in'))
+    document.head.appendChild(s)
+  })
+  return gsiPromise
+}
 
 // One tab that does account + leaderboard:
-//   - backend not configured → a short note (offline-only build)
-//   - logged out → login / signup form
+//   - backend / Google not configured → a short note (offline-only build)
+//   - logged out → "Sign in with Google" button
 //   - logged in  → leaderboard + logout
 export default function AccountTab() {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn())
 
-  if (!isConfigured()) {
+  if (!isConfigured() || !CLIENT_ID) {
     return (
       <div style={S.wrap}>
         <h2 style={S.h2}>Account</h2>
@@ -18,54 +35,40 @@ export default function AccountTab() {
   }
   return loggedIn
     ? <Board onLogout={() => { logout(); setLoggedIn(false) }} />
-    : <AuthForm onDone={() => setLoggedIn(true)} />
+    : <AuthForm />
 }
 
-function AuthForm({ onDone }) {
-  const [mode, setMode] = useState('login')       // 'login' | 'signup'
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
+function AuthForm() {
+  const btnRef = useRef(null)
   const [error, setError] = useState(null)
-  const [busy, setBusy] = useState(false)
 
-  async function submit(e) {
-    e.preventDefault()
-    setError(null); setBusy(true)
+  async function onCredential(response) {
     try {
-      if (mode === 'signup') await signup(email, password, displayName)
-      else await login(email, password)
+      await googleLogin(response.credential)
       await pull()                     // merge server progress into localStorage
       sessionStorage.setItem('synced', '1')
       window.location.reload()         // let the app re-read merged progress
-      onDone()
     } catch (err) {
       setError(err.message)
-      setBusy(false)
     }
   }
 
+  useEffect(() => {
+    let cancelled = false
+    loadGsi().then(() => {
+      if (cancelled) return
+      window.google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCredential })
+      window.google.accounts.id.renderButton(btnRef.current, { theme: 'outline', size: 'large', width: 260 })
+    }).catch(err => setError(err.message))
+    return () => { cancelled = true }
+  }, [])
+
   return (
     <div style={S.wrap}>
-      <h2 style={S.h2}>{mode === 'signup' ? 'Create account' : 'Log in'}</h2>
+      <h2 style={S.h2}>Log in</h2>
       <p style={S.muted}>Sync your progress across devices and join the leaderboard.</p>
-      <form onSubmit={submit} style={S.form}>
-        {mode === 'signup' && (
-          <input style={S.input} placeholder="Display name" value={displayName}
-            onChange={e => setDisplayName(e.target.value)} autoComplete="nickname" />
-        )}
-        <input style={S.input} type="email" placeholder="Email" value={email}
-          onChange={e => setEmail(e.target.value)} autoComplete="email" required />
-        <input style={S.input} type="password" placeholder="Password (8+ chars)" value={password}
-          onChange={e => setPassword(e.target.value)} autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} required />
-        {error && <p style={S.error}>{error}</p>}
-        <button style={S.btn} disabled={busy} type="submit">
-          {busy ? '…' : mode === 'signup' ? 'Sign up' : 'Log in'}
-        </button>
-      </form>
-      <button style={S.link} onClick={() => { setMode(mode === 'signup' ? 'login' : 'signup'); setError(null) }}>
-        {mode === 'signup' ? 'Have an account? Log in' : "New here? Create an account"}
-      </button>
+      <div ref={btnRef} style={S.gsi} />
+      {error && <p style={S.error}>{error}</p>}
     </div>
   )
 }
@@ -99,9 +102,7 @@ const S = {
   wrap: { padding: '24px 20px 96px', maxWidth: 480, margin: '0 auto' },
   h2: { fontSize: 24, margin: '0 0 4px' },
   muted: { color: '#667', fontSize: 14, margin: '0 0 20px' },
-  form: { display: 'flex', flexDirection: 'column', gap: 12 },
-  input: { padding: '12px 14px', fontSize: 16, border: '1px solid #ccd', borderRadius: 10 },
-  btn: { padding: '12px 14px', fontSize: 16, fontWeight: 600, color: '#fff', background: '#3b82f6', border: 0, borderRadius: 10, cursor: 'pointer' },
+  gsi: { display: 'flex', justifyContent: 'center' },
   link: { marginTop: 16, background: 'none', border: 0, color: '#3b82f6', fontSize: 14, cursor: 'pointer' },
   error: { color: '#dc2626', fontSize: 14, margin: 0 },
   list: { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 },
