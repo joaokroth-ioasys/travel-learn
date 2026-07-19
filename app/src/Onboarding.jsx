@@ -11,10 +11,9 @@ const COUNTRIES = [
 ];
 
 export default function Onboarding({ onComplete }) {
-  const [username, setUsername] = useState('');
   const [selected, setSelected] = useState(null); // journey id
 
-  const canStart = username.trim().length > 0 && selected != null;
+  const canStart = selected != null;
 
   return (
     <div className="onboarding-screen">
@@ -26,14 +25,6 @@ export default function Onboarding({ onComplete }) {
         <p className="onboarding-description">
           Pick a country, travel city by city, and pick up the words you'd actually need to use there.
         </p>
-
-        <input
-          type="text"
-          className="onboarding-name-input"
-          placeholder="What should we call you?"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
 
         <p className="onboarding-countries-title">Choose a country to start</p>
 

@@ -10,6 +10,7 @@ import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
 import CoachMarks from './CoachMarks'
 import AccountTab from './AccountTab'
+import LoginGate from './LoginGate'
 import journeys, { getJourney } from './journeys'
 import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
 import { isLoggedIn, pull } from './sync'
@@ -73,6 +74,12 @@ export default function App() {
       pull().then(() => window.location.reload())
     }
   }, [])
+
+  // Required sign-in gate before everything (skipped when Google isn't configured,
+  // e.g. an offline-only build).
+  if (import.meta.env.VITE_GOOGLE_CLIENT_ID && !isLoggedIn()) {
+    return <LoginGate />
+  }
 
   // Show onboarding before everything else
   if (!onboarded) {

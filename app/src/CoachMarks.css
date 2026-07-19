@@ -59,7 +59,7 @@
 }
 
 /* Flag switcher lives at top:12px right:12px inside .map-container */
-.coach-flag { position: absolute; top: 106px; right: 16px; align-items: flex-end; }
+.coach-flag { position: absolute; top: 130px; right: 20px; align-items: flex-end; }
 .coach-flag .coach-arrow-up { margin-right: 18px; }
 
 /* Bottom-nav tabs: 5 equal columns → centers at 10/30/50/70/90%.
@@ -69,8 +69,8 @@
   bottom: 76px;
   transform: translateX(-50%);
 }
-.coach-citylife { left: 50%; }
-.coach-passport { left: 70%; }
+.coach-citylife { left: 41.6%; }
+.coach-passport { left: 58.5%; }
 
 .coach-hint {
   position: absolute;

@@ -53,13 +53,17 @@ async function push(journeyId) {
 
 // Pull every journey's blob from the server into localStorage. Call on login /
 // session start. ponytail: server overwrites local (last device to push wins).
+// Returns the rows on success, or null on error/logged-out so callers can tell
+// "empty account" (new user) from "request failed".
 export async function pull() {
-  if (!isLoggedIn()) return;
+  if (!isLoggedIn()) return null;
   try {
     const res = await fetch(`${API}/progress`, { headers: authHeaders() });
-    if (!res.ok) return;
-    for (const row of await res.json()) apply(row.journey_id, row.data);
-  } catch { /* offline — keep local */ }
+    if (!res.ok) return null;
+    const rows = await res.json();
+    for (const row of rows) apply(row.journey_id, row.data);
+    return rows;
+  } catch { return null; } // offline — keep local
 }
 
 // Exchange a Google ID token (from the "Sign in with Google" button) for our app JWT.
