@@ -1,6 +1,8 @@
 // Per-journey progress storage. Keys are namespaced so German and French
 // progress never collide: journey:<id>:<name>.
 
+import { schedulePush } from './sync.js';
+
 const key = (journeyId, name) => `journey:${journeyId}:${name}`;
 
 // JSON-backed load/save (used for completed, xp, streak, stars, stamps, srs).
@@ -16,6 +18,7 @@ export function load(journeyId, name, fallback) {
 export function save(journeyId, name, value) {
   try {
     localStorage.setItem(key(journeyId, name), JSON.stringify(value));
+    schedulePush(journeyId); // best-effort cloud sync; no-op when logged out
   } catch {
     // ponytail: quota exceeded / private mode — progress just doesn't persist
   }

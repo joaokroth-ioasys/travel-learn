@@ -9,8 +9,10 @@ import PassportTab from './PassportTab'
 import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
 import CoachMarks from './CoachMarks'
+import AccountTab from './AccountTab'
 import journeys, { getJourney } from './journeys'
 import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
+import { isLoggedIn, pull } from './sync'
 import { isCompletedMode, enterCompletedMode, exitCompletedMode } from './completedUser'
 
 // Streak counts that deserve a celebration.
@@ -62,6 +64,15 @@ export default function App() {
   useEffect(() => {
     save(journey, 'completed', [...completedLessons])
   }, [journey, completedLessons])
+
+  // Once per browser session, if logged in, pull the latest server progress and
+  // reload so all screens read the merged localStorage. The flag stops a loop.
+  useEffect(() => {
+    if (isLoggedIn() && !sessionStorage.getItem('synced')) {
+      sessionStorage.setItem('synced', '1')
+      pull().then(() => window.location.reload())
+    }
+  }, [])
 
   // Show onboarding before everything else
   if (!onboarded) {
@@ -253,6 +264,8 @@ export default function App() {
           activeJourney={journey}
           onGoToCity={handleGoToCity}
         />
+      ) : tab === 'account' ? (
+        <AccountTab />
       ) : screen === 'city' ? (
         <CityPage
           content={pack.content}
@@ -336,6 +349,13 @@ export default function App() {
         >
           <span className="bnav-icon">🃏</span>
           <span className="bnav-label">Review</span>
+        </button>
+        <button
+          className={`bottom-nav-btn${tab === 'account' ? ' active' : ''}`}
+          onClick={() => handleTabSwitch('account')}
+        >
+          <span className="bnav-icon">🏆</span>
+          <span className="bnav-label">Ranking</span>
         </button>
       </nav>
     </>
