@@ -1,5 +1,5 @@
 import d2 from '../d2/content';
-import fr from '../fr/content';
+import fr from '../f2/content';
 import c2 from '../c2/content';
 import j2 from '../j2/content';
 import extras from './extras';

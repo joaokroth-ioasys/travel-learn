@@ -68,8 +68,9 @@ export const PASSPORTS = {
     completeText: '🎉 Journey Complete!',
     completeSub: 'Alle Städte gestempelt! Herzlichen Glückwunsch!',
   },
-  fr: {
+  f2: {
     name: 'France',
+    img: 'fr',   // reuses /passport/fr-flag.png + fr-stamp.png + fr/ city stamps
     eu: 'UNION EUROPÉENNE',
     emblem: '⚜️',
     coverType: 'PASSEPORT',
@@ -143,10 +144,6 @@ export const PASSPORTS = {
     completeSub: 'すべての都市にスタンプ！おめでとうございます！',
   },
 }
-
-// f2 (world map framed on France) reuses the France passport and its stamp art
-// (img: 'fr' → PassportTab loads /passport/fr* assets instead of non-existent f2 ones).
-PASSPORTS.f2 = { ...PASSPORTS.fr, img: 'fr' };
 
 // Cities that have a real cropped stamp / flag image in /public/passport.
 // Others (Wien, Zürich, Bruxelles — not in the national stamp sheets) keep their emoji.

@@ -9,7 +9,6 @@ import PassportTab from './PassportTab'
 import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
 import CoachMarks from './CoachMarks'
-import AccountTab from './AccountTab'
 import LoginGate from './LoginGate'
 import journeys, { getJourney } from './journeys'
 import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
@@ -27,9 +26,9 @@ const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2'])
 export default function App() {
   const [journey, setJourney] = useState(() => {
     const stored = loadGlobal('active-journey')
-    const id = stored === 'cl' ? 'c2' : stored === 'jp' ? 'j2' : stored   // cl→c2, jp→j2
+    const id = stored === 'cl' ? 'c2' : stored === 'jp' ? 'j2' : stored === 'fr' ? 'f2' : stored   // cl→c2, jp→j2, fr→f2
     return journeys[id] ? id : 'd2' // ignore a stale id (e.g. the old 'xx'/'test')
-  }) // 'fr' | 'd2'
+  }) // 'f2' | 'd2'
   const [tab, setTab] = useState('map')           // 'map' | 'review' | 'daily'
   const [screen, setScreen] = useState('map')      // map | city | lesson
   const [selectedCity, setSelectedCity] = useState(null)
@@ -271,8 +270,6 @@ export default function App() {
           activeJourney={journey}
           onGoToCity={handleGoToCity}
         />
-      ) : tab === 'account' ? (
-        <AccountTab />
       ) : screen === 'city' ? (
         <CityPage
           content={pack.content}
@@ -356,13 +353,6 @@ export default function App() {
         >
           <span className="bnav-icon">🃏</span>
           <span className="bnav-label">Review</span>
-        </button>
-        <button
-          className={`bottom-nav-btn${tab === 'account' ? ' active' : ''}`}
-          onClick={() => handleTabSwitch('account')}
-        >
-          <span className="bnav-icon">🏆</span>
-          <span className="bnav-label">Ranking</span>
         </button>
       </nav>
     </>
