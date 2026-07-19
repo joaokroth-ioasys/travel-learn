@@ -8,6 +8,7 @@ import DailyChallenge from './DailyChallenge'
 import PassportTab from './PassportTab'
 import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
+import CoachMarks from './CoachMarks'
 import journeys, { getJourney } from './journeys'
 import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
 import { isCompletedMode, enterCompletedMode, exitCompletedMode } from './completedUser'
@@ -44,6 +45,8 @@ export default function App() {
 
   // Onboarded is global (not per-journey)
   const [onboarded, setOnboarded] = useState(() => loadGlobal('onboarded') === '1')
+  // First-run coach marks (global): shown once on the map after Start Journey
+  const [coachSeen, setCoachSeen] = useState(() => loadGlobal('coach-marks') === '1')
 
   // Reload progress when the active journey changes (each journey is isolated).
   useEffect(() => {
@@ -63,7 +66,12 @@ export default function App() {
   // Show onboarding before everything else
   if (!onboarded) {
     return (
-      <Onboarding onComplete={() => { saveGlobal('onboarded', '1'); setOnboarded(true); }} />
+      <Onboarding onComplete={(journeyId) => {
+        saveGlobal('active-journey', journeyId)
+        setJourney(journeyId)
+        saveGlobal('onboarded', '1')
+        setOnboarded(true)
+      }} />
     )
   }
 
@@ -277,6 +285,10 @@ export default function App() {
         />
       )}
       <RewardBurst burst={rewardBurst} onDone={() => setRewardBurst(null)} />
+
+      {!coachSeen && tab === 'map' && screen === 'map' && (
+        <CoachMarks onDismiss={() => { saveGlobal('coach-marks', '1'); setCoachSeen(true); }} />
+      )}
 
       {/* ponytail: dev/demo toggle — fill or restore all progress (see completedUser.js) */}
       <button

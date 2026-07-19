@@ -1,0 +1,86 @@
+.coach-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900; /* above nav (100), below dev btn / RewardBurst (1000) */
+  background: rgba(40, 30, 20, 0.55);
+  cursor: pointer;
+  animation: coach-fade 0.25s ease;
+}
+
+@keyframes coach-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.coach-callout {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: 240px;
+}
+
+.coach-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f5f0e8;
+  color: #4a3728;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+.coach-bubble strong { font-size: 0.95rem; font-weight: 800; }
+
+/* Little triangle pointing toward the target */
+.coach-arrow {
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+}
+.coach-arrow-up { border-bottom: 11px solid #f5f0e8; }
+.coach-arrow-down { border-top: 11px solid #f5f0e8; }
+
+/* Centered column mirroring .map-container so the flag callout tracks the map's
+   right edge (not the viewport edge, where the dev "Complete all" button sits). */
+.coach-map-anchor {
+  position: absolute;
+  inset: 0;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* Flag switcher lives at top:12px right:12px inside .map-container */
+.coach-flag { position: absolute; top: 106px; right: 16px; align-items: flex-end; }
+.coach-flag .coach-arrow-up { margin-right: 18px; }
+
+/* Bottom-nav tabs: 5 equal columns → centers at 10/30/50/70/90%.
+   Callouts sit above the 64px nav. */
+.coach-citylife,
+.coach-passport {
+  bottom: 76px;
+  transform: translateX(-50%);
+}
+.coach-citylife { left: 50%; }
+.coach-passport { left: 70%; }
+
+.coach-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: 0;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.85;
+}

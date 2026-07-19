@@ -9,7 +9,7 @@
 
 .onboarding-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,25 +52,89 @@
   line-height: 1.6;
 }
 
-.onboarding-cities {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin: 8px 0;
+.onboarding-name-input {
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #ddd5c2;
+  background: #fff;
+  font-size: 16px;
+  color: #1a1a2e;
+  text-align: center;
+  outline: none;
 }
 
-.onboarding-city-badge {
-  display: inline-flex;
+.onboarding-name-input::placeholder {
+  color: #9490a8;
+}
+
+.onboarding-countries-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5a5a7a;
+  margin: 4px 0 0;
+}
+
+.onboarding-countries {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.onboarding-country {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  min-height: 96px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1.5px solid #e5ddc9;
+  border-radius: 18px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.onboarding-country.selected {
+  border: 2px solid #1a1a2e;
+  box-shadow: 0 2px 10px rgba(26, 26, 46, 0.12);
+}
+
+.onboarding-country-head {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  background: #ede8dc;
-  border: 1px solid #d8d0c0;
-  border-radius: 20px;
+  gap: 10px;
+}
+
+.onboarding-country-flag {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.onboarding-country-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.onboarding-country-cities {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.onboarding-city-chip {
   font-size: 13px;
   font-weight: 600;
-  color: #3a3a5a;
+  color: #6b6890;
+  background: #efe9db;
+  border-radius: 999px;
+  padding: 5px 10px;
   white-space: nowrap;
 }
 
@@ -90,10 +154,15 @@
   transition: background 0.18s ease, transform 0.12s ease;
 }
 
-.onboarding-start-btn:hover {
+.onboarding-start-btn:hover:not(:disabled) {
   background: #2d2d50;
 }
 
-.onboarding-start-btn:active {
+.onboarding-start-btn:active:not(:disabled) {
   transform: scale(0.97);
+}
+
+.onboarding-start-btn:disabled {
+  background: #c9c3b0;
+  cursor: not-allowed;
 }
