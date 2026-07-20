@@ -221,7 +221,8 @@ const cities = [
         name: 'City Wall',
         icon: '🧱',
         coords: [34.2612, 108.9398],
-        wikiTitle: 'Fortifications of Xi’an',
+        wikiTitle: "Fortifications of Xi'an",
+        image: 'https://upload.wikimedia.org/wikipedia/commons/3/32/City_wall_of_Xi%27an_51550-Xian_%2827959363326%29.jpg',
         narrative:
           'The traveller rents a bike and rides the full loop atop the 600-year-old wall, ' +
           'one of the best preserved in China.',
@@ -243,7 +244,8 @@ const cities = [
         name: 'Muslim Quarter',
         icon: '🍢',
         coords: [34.2667, 108.9400],
-        wikiTitle: 'Muslim Quarter (Xi’an)',
+        wikiTitle: "Muslim Quarter, Xi'an",
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/1_xian_muslim_quarter_china_2011.JPG/1280px-1_xian_muslim_quarter_china_2011.JPG',
         narrative:
           'Lantern-lit lanes packed with food stalls: hand-pulled noodles, roujiamo, and ' +
           'skewers sizzling over coals. Time to count out an order.',
@@ -265,7 +267,8 @@ const cities = [
         name: 'Bell Tower',
         icon: '🔔',
         coords: [34.2610, 108.9530],
-        wikiTitle: 'Bell Tower of Xi’an',
+        wikiTitle: "Bell Tower of Xi'an",
+        image: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Xi%27an_Bell_Tower_2024.10.jpg',
         narrative:
           'The great wooden Bell Tower marks the exact centre of the old city, glowing gold ' +
           'at night above the traffic circle.',
@@ -400,6 +403,7 @@ const cities = [
         icon: '🛕',
         coords: [30.6464, 104.0483],
         wikiTitle: 'Wuhou District',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chengdu_Wuhou_ci.jpg/1280px-Chengdu_Wuhou_ci.jpg',
         narrative:
           'A tranquil temple and garden honouring the heroes of the Three Kingdoms, shaded ' +
           'by old cypress trees, a calm end to a spicy day.',
@@ -534,6 +538,7 @@ const cities = [
         icon: '🗼',
         coords: [31.2397, 121.4998],
         wikiTitle: 'Oriental Pearl Tower',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Shanghai-Skyline-52-Flusspanorama_mit_Oriental_Pearl_Tower-2012-gje.jpg/1920px-Shanghai-Skyline-52-Flusspanorama_mit_Oriental_Pearl_Tower-2012-gje.jpg',
         narrative:
           'The pink-orbed TV tower that defines the Pudong skyline. From the glass sky-deck, ' +
           'the whole city unrolls beneath the traveller’s feet.',
@@ -646,6 +651,7 @@ const cities = [
         icon: '\u{1F375}',
         coords: [30.2100, 120.1300],
         wikiTitle: 'Longjing tea',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Longjing_Tea_field%2C_Dragon_Well_area%2C_Meijiawu_China.jpg/1920px-Longjing_Tea_field%2C_Dragon_Well_area%2C_Meijiawu_China.jpg',
         narrative:
           'Terraced tea bushes climb the misty hills of Meijiawu. A farmer pours a glass of ' +
           'freshly pan-roasted Longjing, the famous "Dragon Well" green tea.',
@@ -758,6 +764,7 @@ const cities = [
         icon: '🕳️',
         coords: [25.3050, 110.2760],
         wikiTitle: 'Reed Flute Cave',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Reed_Flute_Cave_89130-Guilin_%2831110901268%29.jpg/1920px-Reed_Flute_Cave_89130-Guilin_%2831110901268%29.jpg',
         narrative:
           'A vast limestone cave lit in electric colours, its stalactites and columns ' +
           'reflected in still underground pools.',
@@ -870,6 +877,7 @@ const cities = [
         icon: '🗼',
         coords: [23.1066, 113.3245],
         wikiTitle: 'Canton Tower',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/GuangzhouSkyline2020.jpg/1920px-GuangzhouSkyline2020.jpg',
         narrative:
           'The slim, twisting tower glows through changing colours at night above the Pearl ' +
           'River, one of the tallest structures in the world.',
@@ -892,6 +900,7 @@ const cities = [
         icon: '🏛️',
         coords: [23.1080, 113.2430],
         wikiTitle: 'Shamian Island',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Shamian_Island_03162-Guangzhou_%2832234637813%29.jpg/1920px-Shamian_Island_03162-Guangzhou_%2832234637813%29.jpg',
         narrative:
           'A leafy sandbank of European colonial villas and quiet tree-lined avenues, a ' +
           'peaceful contrast to the roaring city around it.',
@@ -1026,6 +1035,7 @@ const cities = [
         icon: '⛴️',
         coords: [22.2940, 114.1687],
         wikiTitle: 'Star Ferry',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Central_Skyline_with_IFC_building_from_Star_Ferry_in_Victoria_Harbour%2C_Hong_Kong_2.jpg/1920px-Central_Skyline_with_IFC_building_from_Star_Ferry_in_Victoria_Harbour%2C_Hong_Kong_2.jpg',
         narrative:
           'A green-and-white ferry has crossed Victoria Harbour for over a century. For a few ' +
           'coins, the traveller glides between Kowloon and Hong Kong Island.',
@@ -1070,6 +1080,7 @@ const cities = [
         icon: '🏮',
         coords: [22.3110, 114.1700],
         wikiTitle: 'Temple Street, Hong Kong',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Mercado_en_Temple_St.%2C_Hong_Kong%2C_2013-08-11%2C_DD_02.JPG/1920px-Mercado_en_Temple_St.%2C_Hong_Kong%2C_2013-08-11%2C_DD_02.JPG',
         narrative:
           'After dark the street fills with stalls, fortune tellers, and open-air seafood ' +
           'restaurants. The perfect neon-lit finale to the whole journey across China.',

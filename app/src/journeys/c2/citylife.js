@@ -2,13 +2,13 @@
 // Spanish counterpart of de/citylife.js — same 7 locations, ids, icons, accents
 // and stage structure; phrases translated to Chilean Spanish ({ es, en } — the
 // shape RouteJourney's native line already renders). `pos` is tuned to the
-// Chile diorama (public/city-life-map-chile.jpg). Visit sequence:
+// Chile diorama (public/city-life-map-chile.png). Visit sequence:
 // gym → tourist guide → doctor → public services → restaurant → train → airport.
 
 const LOCATIONS = [
   {
     id: 'gym', name: 'Gym', icon: '🏋️', accent: '#7a5cc0',
-    tagline: 'Join, train, share the machines', pos: { x: 22, y: 30 },
+    tagline: 'Join, train, share the machines', pos: { x: 15, y: 35 },
     stages: [
       {
         id: 'cl-gym-join', name: 'Sign up', icon: '📝',
@@ -92,7 +92,7 @@ const LOCATIONS = [
 
   {
     id: 'tourist-guide', name: 'Tourist Guide', icon: '🗺️', accent: '#3a9188',
-    tagline: 'The tour and the sights', pos: { x: 76, y: 20 },
+    tagline: 'The tour and the sights', pos: { x: 70, y: 13 },
     stages: [
       {
         id: 'cl-tour-info', name: 'Tour info', icon: '🕒',
@@ -159,7 +159,7 @@ const LOCATIONS = [
 
   {
     id: 'doctor', name: 'Doctor & Hospital', icon: '🏥', accent: '#d06b8c',
-    tagline: 'Feeling ill and getting help', pos: { x: 68, y: 46 },
+    tagline: 'Feeling ill and getting help', pos: { x: 66, y: 38 },
     stages: [
       {
         id: 'cl-doc-reception', name: 'Reception', icon: '🪪',
@@ -242,7 +242,7 @@ const LOCATIONS = [
 
   {
     id: 'public-services', name: 'Public Services', icon: '🏛️', accent: '#4a7a8c',
-    tagline: 'Registration, visa, paperwork', pos: { x: 42, y: 52 },
+    tagline: 'Registration, visa, paperwork', pos: { x: 35, y: 23 },
     stages: [
       {
         id: 'cl-pub-appointment', name: 'Book an appointment', icon: '📅',
@@ -308,7 +308,7 @@ const LOCATIONS = [
 
   {
     id: 'restaurant', name: 'Restaurant', icon: '🍽️', accent: '#c0504d',
-    tagline: 'A table, a meal, the bill', pos: { x: 15, y: 89 },
+    tagline: 'A table, a meal, the bill', pos: { x: 33, y: 66 },
     stages: [
       {
         id: 'cl-rest-arrive', name: 'Arrive', icon: '🪑',
@@ -389,7 +389,7 @@ const LOCATIONS = [
 
   {
     id: 'train-station', name: 'Train Station', icon: '🚉', accent: '#5b8c5a',
-    tagline: 'Find your way and board', pos: { x: 52, y: 78 },
+    tagline: 'Find your way and board', pos: { x: 56, y: 56 },
     stages: [
       {
         id: 'cl-train-orient', name: 'Orient yourself', icon: '🧭',
@@ -469,7 +469,7 @@ const LOCATIONS = [
 
   {
     id: 'airport', name: 'Airport', icon: '✈️', accent: '#3a7bd5',
-    tagline: 'From check-in to taxi', pos: { x: 72, y: 87 },
+    tagline: 'From check-in to taxi', pos: { x: 80, y: 60 },
     stages: [
       {
         id: 'cl-airport-checkin', name: 'Check-in', icon: '🛄',

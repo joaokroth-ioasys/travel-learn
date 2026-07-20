@@ -9,7 +9,7 @@
 const LOCATIONS = [
   {
     id: 'airport', name: 'Airport', icon: '✈️', accent: '#3a7bd5',
-    tagline: 'From check-in to taxi', pos: { x: 13, y: 13 },
+    tagline: 'From check-in to taxi', pos: { x: 12, y: 19 },
     stages: [
       {
         id: 'cl-airport-checkin', name: 'Check-in', icon: '🛄',
@@ -106,7 +106,7 @@ const LOCATIONS = [
   },
   {
     id: 'train-station', name: 'Train Station', icon: '🚉', accent: '#5b8c5a',
-    tagline: 'High-speed rail: find your way and board', pos: { x: 40, y: 15 },
+    tagline: 'High-speed rail: find your way and board', pos: { x: 45, y: 20 },
     stages: [
       {
         id: 'cl-train-orient', name: 'Orient yourself', icon: '🧭',
@@ -184,77 +184,9 @@ const LOCATIONS = [
     ],
   },
 
-
-{
-    id: 'tourist-guide', name: 'Tourist Guide', icon: '🗺️', accent: '#3a9188',
-    tagline: 'The tour and the sights', pos: { x: 46, y: 30 },
-    stages: [
-      {
-        id: 'cl-tour-info', name: 'Tour info', icon: '🕒',
-        narrative: 'You meet the guide and get the plan for the day.',
-        phrases: [
-          { zh: '导游几点开始？', pinyin: 'Dǎoyóu jǐ diǎn kāishǐ?', en: 'When does the tour start?' },
-          { zh: '我们去哪里？', pinyin: 'Wǒmen qù nǎlǐ?', en: 'Where are we going?' },
-          { zh: '这个团要多久？', pinyin: 'Zhè ge tuán yào duōjiǔ?', en: 'How long does the tour take?' },
-        ],
-        quiz: {
-          question: '"导游" is a…',
-          options: ['tour guide', 'map', 'ticket'],
-          correct: 'tour guide',
-          explanation: '导游 (dǎoyóu) = tour guide; 团 = tour group.',
-        },
-      },
-      {
-        id: 'cl-tour-getthere', name: 'Getting there', icon: '🚶',
-        narrative: 'You ask how to reach the first stop.',
-        phrases: [
-          { zh: '博物馆怎么走？', pinyin: 'Bówùguǎn zěnme zǒu?', en: 'How do I get to the museum?' },
-          { zh: '走路能到吗？', pinyin: 'Zǒulù néng dào ma?', en: 'Can I get there on foot?' },
-          { zh: '坐地铁吧。', pinyin: 'Zuò dìtiě ba.', en: 'Take the subway.' },
-        ],
-        quiz: {
-          question: '"地铁" means…',
-          options: ['subway', 'on foot', 'taxi'],
-          correct: 'subway',
-          explanation: '地铁 (dìtiě) = subway; 走路 = on foot.',
-        },
-      },
-      {
-        id: 'cl-tour-sights', name: 'The sights', icon: '📸',
-        narrative: 'Famous Chinese landmarks: 故宫 (Forbidden City), 长城 (Great Wall), 兵马俑 (Terracotta Army), 外滩 (the Bund).',
-        phrases: [
-          { zh: '长城非常有名。', pinyin: 'Chángchéng fēicháng yǒumíng.', en: 'The Great Wall is very famous.' },
-          { zh: '我想去故宫。', pinyin: 'Wǒ xiǎng qù Gùgōng.', en: "I'd like to visit the Forbidden City." },
-          { zh: '兵马俑在西安。', pinyin: "Bīngmǎyǒng zài Xī'ān.", en: "The Terracotta Army is in Xi'an." },
-        ],
-        quiz: {
-          question: 'Which landmark is in Beijing?',
-          options: ['故宫 (Forbidden City)', '兵马俑 (Terracotta Army)', '外滩 (the Bund)'],
-          correct: '故宫 (Forbidden City)',
-          explanation: 'The 故宫 is in Beijing; 兵马俑 is in Xi\'an; 外滩 is in Shanghai.',
-        },
-      },
-      {
-        id: 'cl-tour-ticket', name: 'Buy entry', icon: '🎫',
-        narrative: 'At the entrance you buy tickets.',
-        phrases: [
-          { zh: '两张门票，谢谢。', pinyin: 'Liǎng zhāng ménpiào, xièxie.', en: 'Two entry tickets, please.' },
-          { zh: '有学生票吗？', pinyin: 'Yǒu xuéshēng piào ma?', en: 'Is there a student ticket?' },
-          { zh: '门票免费。', pinyin: 'Ménpiào miǎnfèi.', en: 'Admission is free.' },
-        ],
-        quiz: {
-          question: '"门票" is the…',
-          options: ['entry ticket', 'tour guide', 'map'],
-          correct: 'entry ticket',
-          explanation: '门票 (ménpiào) = entry ticket; 免费 = free.',
-        },
-      },
-    ],
-  },
-
   {
     id: 'doctor', name: 'Doctor & Hospital', icon: '🏥', accent: '#d06b8c',
-    tagline: 'Feeling ill and getting help', pos: { x: 82, y: 20 },
+    tagline: 'Feeling ill and getting help', pos: { x: 74, y: 25 },
     stages: [
       {
         id: 'cl-doc-reception', name: 'Registration', icon: '🪪',
@@ -335,7 +267,7 @@ const LOCATIONS = [
   },
   {
     id: 'restaurant', name: 'Restaurant', icon: '🍽️', accent: '#c0504d',
-    tagline: 'A table, a meal, the bill', pos: { x: 83, y: 45 },
+    tagline: 'A table, a meal, the bill', pos: { x: 73, y: 47 },
     stages: [
       {
         id: 'cl-rest-arrive', name: 'Arrive', icon: '🪑',
@@ -416,7 +348,7 @@ const LOCATIONS = [
   
   {
     id: 'gym', name: 'Gym', icon: '🏋️', accent: '#7a5cc0',
-    tagline: 'Join, train, share the machines', pos: { x: 24, y: 62 },
+    tagline: 'Join, train, share the machines', pos: { x: 34, y: 65 },
     stages: [
       {
         id: 'cl-gym-join', name: 'Sign up', icon: '📝',
@@ -500,7 +432,7 @@ const LOCATIONS = [
 
   {
     id: 'public-services', name: 'Public Services', icon: '🏛️', accent: '#4a7a8c',
-    tagline: 'Registration, visa, paperwork', pos: { x: 76, y: 78 },
+    tagline: 'Registration, visa, paperwork', pos: { x: 78, y: 75  },
     stages: [
       {
         id: 'cl-pub-appointment', name: 'Book an appointment', icon: '📅',
@@ -563,6 +495,73 @@ const LOCATIONS = [
       },
     ],
   },
+  {
+    id: 'tourist-guide', name: 'Tourist Guide', icon: '🗺️', accent: '#3a9188',
+    tagline: 'The tour and the sights', pos: { x: 40, y: 85 },
+    stages: [
+      {
+        id: 'cl-tour-info', name: 'Tour info', icon: '🕒',
+        narrative: 'You meet the guide and get the plan for the day.',
+        phrases: [
+          { zh: '导游几点开始？', pinyin: 'Dǎoyóu jǐ diǎn kāishǐ?', en: 'When does the tour start?' },
+          { zh: '我们去哪里？', pinyin: 'Wǒmen qù nǎlǐ?', en: 'Where are we going?' },
+          { zh: '这个团要多久？', pinyin: 'Zhè ge tuán yào duōjiǔ?', en: 'How long does the tour take?' },
+        ],
+        quiz: {
+          question: '"导游" is a…',
+          options: ['tour guide', 'map', 'ticket'],
+          correct: 'tour guide',
+          explanation: '导游 (dǎoyóu) = tour guide; 团 = tour group.',
+        },
+      },
+      {
+        id: 'cl-tour-getthere', name: 'Getting there', icon: '🚶',
+        narrative: 'You ask how to reach the first stop.',
+        phrases: [
+          { zh: '博物馆怎么走？', pinyin: 'Bówùguǎn zěnme zǒu?', en: 'How do I get to the museum?' },
+          { zh: '走路能到吗？', pinyin: 'Zǒulù néng dào ma?', en: 'Can I get there on foot?' },
+          { zh: '坐地铁吧。', pinyin: 'Zuò dìtiě ba.', en: 'Take the subway.' },
+        ],
+        quiz: {
+          question: '"地铁" means…',
+          options: ['subway', 'on foot', 'taxi'],
+          correct: 'subway',
+          explanation: '地铁 (dìtiě) = subway; 走路 = on foot.',
+        },
+      },
+      {
+        id: 'cl-tour-sights', name: 'The sights', icon: '📸',
+        narrative: 'Famous Chinese landmarks: 故宫 (Forbidden City), 长城 (Great Wall), 兵马俑 (Terracotta Army), 外滩 (the Bund).',
+        phrases: [
+          { zh: '长城非常有名。', pinyin: 'Chángchéng fēicháng yǒumíng.', en: 'The Great Wall is very famous.' },
+          { zh: '我想去故宫。', pinyin: 'Wǒ xiǎng qù Gùgōng.', en: "I'd like to visit the Forbidden City." },
+          { zh: '兵马俑在西安。', pinyin: "Bīngmǎyǒng zài Xī'ān.", en: "The Terracotta Army is in Xi'an." },
+        ],
+        quiz: {
+          question: 'Which landmark is in Beijing?',
+          options: ['故宫 (Forbidden City)', '兵马俑 (Terracotta Army)', '外滩 (the Bund)'],
+          correct: '故宫 (Forbidden City)',
+          explanation: 'The 故宫 is in Beijing; 兵马俑 is in Xi\'an; 外滩 is in Shanghai.',
+        },
+      },
+      {
+        id: 'cl-tour-ticket', name: 'Buy entry', icon: '🎫',
+        narrative: 'At the entrance you buy tickets.',
+        phrases: [
+          { zh: '两张门票，谢谢。', pinyin: 'Liǎng zhāng ménpiào, xièxie.', en: 'Two entry tickets, please.' },
+          { zh: '有学生票吗？', pinyin: 'Yǒu xuéshēng piào ma?', en: 'Is there a student ticket?' },
+          { zh: '门票免费。', pinyin: 'Ménpiào miǎnfèi.', en: 'Admission is free.' },
+        ],
+        quiz: {
+          question: '"门票" is the…',
+          options: ['entry ticket', 'tour guide', 'map'],
+          correct: 'entry ticket',
+          explanation: '门票 (ménpiào) = entry ticket; 免费 = free.',
+        },
+      },
+    ],
+  },
+
 
 ];
 
