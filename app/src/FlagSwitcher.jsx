@@ -20,6 +20,14 @@ function Flag({ country, size }) {
       </span>
     )
   }
+  if (country === 'ch') {
+    // ponytail: single yellow star on red — a simplified stand-in for the 5-star PRC flag.
+    return (
+      <span className={`flag flag-ch ${size || ''}`} aria-hidden="true">
+        <i className="flag-ch-star" />
+      </span>
+    )
+  }
   // World-framed variants reuse the base country's flag styling.
   const c = { f2: 'fr' }[country] || country
   return (
@@ -43,6 +51,7 @@ export default function FlagSwitcher({ journey, onSelect, available }) {
   // Sorted alphabetically by label.
   const journeys = [
     { code: 'c2', label: 'Chile' },   // c2 is the Chile journey (cl retired from the UI)
+    { code: 'ch', label: 'China' },
     { code: 'j2', label: 'Japan' },   // j2 is the Japan journey (jp retired from the UI)
     { code: 'wo', label: 'Monde' },
     { code: 'd2', label: 'Germany' },

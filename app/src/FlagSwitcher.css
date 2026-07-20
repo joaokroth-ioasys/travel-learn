@@ -68,6 +68,15 @@
     50% 70%, 19.1% 90.5%, 31% 57.3%, 2% 35.5%, 38.2% 35.5%);
 }
 
+/* China: red field with a yellow star (upper-left).
+   ponytail: single-star stand-in for the 5-star PRC flag; add the 4 small stars if it matters. */
+.flag-ch { position: relative; background: #de2910; }
+.flag-ch .flag-ch-star {
+  position: absolute; left: 12%; top: 22%; width: 30%; aspect-ratio: 1 / 1; background: #ffde00;
+  clip-path: polygon(50% 0%, 61.8% 35.5%, 98% 35.5%, 69% 57.3%, 80.9% 90.5%,
+    50% 70%, 19.1% 90.5%, 31% 57.3%, 2% 35.5%, 38.2% 35.5%);
+}
+
 /* Japan: white field, centred red disc */
 .flag-jp {
   position: relative; background: #fff;

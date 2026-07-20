@@ -19,8 +19,8 @@ const STREAK_MILESTONES = new Set([3, 7, 14, 30, 60, 100])
 import './BottomNav.css'
 
 // Journeys drawn from the same world-source basis can do the continuous viewBox
-// pan-zoom between them (f2 ↔ d2 ↔ c2 ↔ j2); others fall back to the CSS slide.
-const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2'])
+// pan-zoom between them (f2 ↔ d2 ↔ c2 ↔ j2 ↔ ch); others fall back to the CSS slide.
+const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2', 'ch'])
 
 export default function App() {
   const [journey, setJourney] = useState(() => {

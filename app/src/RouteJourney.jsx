@@ -157,8 +157,8 @@ export default function RouteJourney({
                 {stage.phrases.map((ph, i) => (
                   <li key={i}>
                     <span className="stage__phrase-native">
-                      <span className="stage__phrase-fr">« {ph.fr ?? ph.es ?? ph.de ?? ph.nl ?? ph.da ?? ph.hu ?? ph.ja ?? ph.pt ?? ph.cs ?? ph.it ?? ph.ga ?? ph.no ?? ph.sv ?? ph.pl ?? ph.gb} »</span>
-                      {ph.romaji && <span className="stage__phrase-romaji">{ph.romaji}</span>}
+                      <span className="stage__phrase-fr">« {ph.fr ?? ph.es ?? ph.de ?? ph.nl ?? ph.da ?? ph.hu ?? ph.ja ?? ph.zh ?? ph.pt ?? ph.cs ?? ph.it ?? ph.ga ?? ph.no ?? ph.sv ?? ph.pl ?? ph.gb} »</span>
+                      {(ph.romaji ?? ph.pinyin) && <span className="stage__phrase-romaji">{ph.romaji ?? ph.pinyin}</span>}
                     </span>
                     <span className="stage__phrase-en">{ph.en}</span>
                   </li>

@@ -20,6 +20,16 @@ const cities = [
 // border, so Japan reads as the focused country (mirrors jp/map.js).
 const japanFill = 'M5673.74 938.483L5679.05 945.789L5674.73 958.741L5664.44 951.767L5657.46 956.748L5657.8 969.035L5643.52 963.058L5639.53 953.095L5643.85 940.144L5655.14 942.8L5658.46 933.834L5673.74 938.483ZM5755.43 874.721L5757.42 891.657L5765.72 902.284L5763.73 917.228L5745.8 927.191L5715.25 928.519L5700.64 953.094L5685.03 944.791L5677.06 928.851L5648.5 933.5L5631.56 943.463L5610.97 944.127L5635.55 959.735L5638.2 995.933L5629.9 1004.9L5617.95 996.597L5614.96 977.336L5601.34 971.358L5588.06 956.747L5602.34 950.105L5605.99 936.489L5618.94 925.53L5625.58 910.918L5657.8 904.609L5678.72 908.926V871.068L5695.65 881.362L5710.6 860.109L5716.24 851.807L5712.92 825.904L5695.99 801.993L5695.32 788.71L5711.26 784.725L5738.49 814.28L5747.79 831.217L5743.47 852.803L5755.43 874.721ZM5715.91 725.946L5730.86 730.264L5736.83 721.629L5756.76 745.208L5735.5 750.853L5734.18 771.775L5697.98 757.495L5703.29 780.409L5684.36 780.741L5668.76 759.819L5666.76 743.547L5684.03 742.551L5669.42 713.327L5663.44 697.055L5698.31 718.973L5715.91 725.946Z';
 
+// Neighbours in world-source coords (see borders/world-map-2.md). Sea-of-Japan
+// gap sits between Korea (x≈5490-5568) and Honshu's west coast (x≈5610). China/
+// Russia/Taiwan ride the frame edges, pointing outward — like d2's edge labels.
+// ponytail: first-pass positions; nudge against a screenshot like the viewBox note.
+const neighborLabels = [
+  { name: 'North Korea', x: 5478, y: 805, size: 7 },  // path 181: x[5459-5518] y[763-863]
+  { name: 'South Korea', x: 5532, y: 895, size: 7 },  // path 130: x[5489-5568] y[843-933]
+  { name: 'Russia',      x: 5550, y: 718, size: 8 },  // Sakhalin/coast, north edge (path 230/61)
+];
+
 export default {
   ...woMap,
   // ponytail: hand-fitted square frame on Japan (okinawa at y≈1106 is the south
@@ -32,6 +42,7 @@ export default {
   // labelScale left at default 1: labels are nested inside the cityScale group, so they
   // already ride the 0.73 boost — matching d2's label proportion (any >1 would oversize them).
   cities,
+  neighborLabels,
   mainFill: '#E8DDC8',
   // Override woMap's Germany paths so Japan (not Germany) is the highlighted country.
   countryFill: japanFill,

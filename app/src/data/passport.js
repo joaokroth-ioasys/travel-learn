@@ -39,6 +39,15 @@ export const STAMP_META = {
   osaka:      { code: 'KIX', sub: '大阪 · Kansai' },
   hiroshima:  { code: 'HIJ', sub: '広島' },
   okinawa:    { code: 'OKA', sub: '沖縄 · Naha' },
+  // China
+  beijing:    { code: 'PEK', sub: '北京 · Capital' },
+  xian:       { code: 'XIY', sub: '西安 · Shaanxi' },
+  chengdu:    { code: 'CTU', sub: '成都 · Sichuan' },
+  shanghai:   { code: 'SHA', sub: '上海' },
+  hangzhou:   { code: 'HGH', sub: '杭州 · Zhejiang' },
+  guilin:     { code: 'KWL', sub: '桂林 · Guangxi' },
+  guangzhou:  { code: 'CAN', sub: '广州 · Guangdong' },
+  hongkong:   { code: 'HKG', sub: '香港 · Hong Kong' },
 }
 
 // Per-country passport "chrome" — the static text on the booklet.
@@ -142,6 +151,32 @@ export const PASSPORTS = {
     ],
     completeText: '🎉 旅 完了！ Journey Complete!',
     completeSub: 'すべての都市にスタンプ！おめでとうございます！',
+  },
+  ch: {
+    name: 'China',
+    // no img → uses /passport/ch-flag.png + ch-stamp.png (generated); city stamps
+    // fall back to emoji (ch not in STAMPED_IMG).
+    eu: "PEOPLE'S REPUBLIC OF CHINA",
+    emblem: '⭐',
+    coverType: '护照',
+    bearerLabel: '持照人 / Bearer',
+    citiesLabel: '城市 / Cities',
+    capitalLabel: '首都 / Capital',
+    capital: 'Beijing',
+    mottoLabel: '格言 / Motto',
+    motto: '和而不同 — Harmony in Diversity',
+    stampsLabel: 'VISA / 入境印章',
+    mrz: 'CHN',
+    deco: [
+      { icon: '⭐', label: '五星红旗' },
+      { icon: '🐼', label: '熊猫' },
+      { icon: '🐉', label: '龙' },
+      { icon: '🏮', label: '灯笼' },
+      { icon: '🥟', label: '饺子' },
+      { icon: '🍵', label: '茶' },
+    ],
+    completeText: '🎉 旅程完成！ Journey Complete!',
+    completeSub: '所有城市都盖章了！恭喜你！',
   },
 }
 

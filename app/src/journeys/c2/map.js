@@ -24,10 +24,11 @@ const chileFill =
 // Neighbour/sea labels in world-source coords. Chile's frame is ~3.6× d2's (760 vs
 // 210), so sizes are scaled up from d2's ~4 (raw user units, not cityScale-affected).
 const neighborLabels = [
-  { name: 'Océano Pacífico', x: 1740, y: 2470, size: 14 },
-  { name: 'Argentina',       x: 2270, y: 2470, size: 14 },
-  { name: 'Bolivia',         x: 2200, y: 2185, size: 12 },
-  { name: 'Perú',            x: 1975, y: 2130, size: 12 },
+  { name: 'Océano Pacífico', x: 1800, y: 2500, size: 14 },
+  { name: 'Argentina',       x: 2120, y: 2400, size: 14 },
+  { name: 'Uruguai',         x: 2270, y: 2370, size: 14 },
+  { name: 'Brasil',          x: 2340, y: 2250, size: 14 },
+  { name: 'Paraguai',        x: 2200, y: 2170, size: 12 },
 ];
 
 export default {

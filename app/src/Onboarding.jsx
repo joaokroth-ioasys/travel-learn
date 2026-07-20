@@ -8,6 +8,7 @@ const COUNTRIES = [
   { journey: 'f2', name: 'France',  flag: '🇫🇷', cities: [{ emoji: '🥐', name: 'Paris' }, { emoji: '🏰', name: 'Strasbourg' }, { emoji: '🍷', name: 'Lyon' }] },
   { journey: 'j2', name: 'Japan',   flag: '🇯🇵', cities: [{ emoji: '🌸', name: 'Sapporo' }, { emoji: '🗼', name: 'Tokyo' }, { emoji: '⛩️', name: 'Kyoto' }] },
   { journey: 'c2', name: 'Chile',   flag: '🇨🇱', cities: [{ emoji: '🏛️', name: 'Santiago' }, { emoji: '⚓', name: 'Valparaíso' }, { emoji: '🌵', name: 'Atacama' }] },
+  { journey: 'ch', name: 'China',   flag: '🇨🇳', cities: [{ emoji: '🏯', name: 'Beijing' }, { emoji: '🏺', name: "Xi'an" }, { emoji: '🌆', name: 'Shanghai' }] },
 ];
 
 export default function Onboarding({ onComplete }) {
