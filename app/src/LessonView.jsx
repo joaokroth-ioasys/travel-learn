@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useUi } from './ui';
+import { useUi, useLang, pickLang } from './ui';
 import './LessonView.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -22,13 +22,14 @@ function ArticleBadge({ article }) {
 
 function VocabStep({ step, onNext }) {
   const t = useUi();
+  const lang = useLang();
   return (
     <div className="lesson-card">
       <div className="vocab-word-row">
         <span className="vocab-word">{step.word}</span>
         <ArticleBadge article={step.article} />
       </div>
-      <p className="vocab-english">{step.english}</p>
+      <p className="vocab-english">{pickLang(lang, step.english, step.portuguese)}</p>
       {step.example && <p className="vocab-example">{step.example}</p>}
       <button className="lesson-next-btn" onClick={onNext}>
         {t.next}
@@ -39,10 +40,11 @@ function VocabStep({ step, onNext }) {
 
 function GrammarStep({ step, onNext }) {
   const t = useUi();
+  const lang = useLang();
   return (
     <div className="lesson-card grammar-card">
-      <h2 className="grammar-card-title">{step.title}</h2>
-      <p className="grammar-explanation">{step.explanation}</p>
+      <h2 className="grammar-card-title">{pickLang(lang, step.title, step.titlePt)}</h2>
+      <p className="grammar-explanation">{pickLang(lang, step.explanation, step.explanationPt)}</p>
       {step.examples && step.examples.length > 0 && (
         <ul className="grammar-examples-list">
           {step.examples.map((ex, i) => (
@@ -60,6 +62,7 @@ function GrammarStep({ step, onNext }) {
 }
 
 function MultipleChoiceExercise({ step, onAdvance, onAnswer }) {
+  const lang = useLang();
   const [selected, setSelected] = useState(null);
   const timerRef = useRef(null);
 
@@ -86,7 +89,7 @@ function MultipleChoiceExercise({ step, onAdvance, onAnswer }) {
 
   return (
     <div className="lesson-card">
-      <p className="exercise-question">{step.question}</p>
+      <p className="exercise-question">{pickLang(lang, step.question, step.questionPt)}</p>
       <div className="mc-grid">
         {step.options.map((option) => (
           <button
@@ -105,6 +108,7 @@ function MultipleChoiceExercise({ step, onAdvance, onAnswer }) {
 
 function FillBlankExercise({ step, onAdvance, onAnswer }) {
   const t = useUi();
+  const lang = useLang();
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState(null); // null | 'correct' | 'wrong'
   const timerRef = useRef(null);
@@ -134,7 +138,7 @@ function FillBlankExercise({ step, onAdvance, onAnswer }) {
 
   return (
     <div className="lesson-card">
-      <p className="exercise-question">{step.question}</p>
+      <p className="exercise-question">{pickLang(lang, step.question, step.questionPt)}</p>
       <div className="fill-blank-input-row">
         <input
           type="text"
@@ -170,6 +174,7 @@ function FillBlankExercise({ step, onAdvance, onAnswer }) {
 
 function ExerciseStep({ step, onNext, onAnswer }) {
   const t = useUi();
+  const lang = useLang();
   if (step.subtype === 'multiple-choice') {
     return <MultipleChoiceExercise step={step} onAdvance={onNext} onAnswer={onAnswer} />;
   }
@@ -179,7 +184,7 @@ function ExerciseStep({ step, onNext, onAnswer }) {
   // Fallback for unknown exercise subtypes
   return (
     <div className="lesson-card">
-      <p className="exercise-question">{step.question}</p>
+      <p className="exercise-question">{pickLang(lang, step.question, step.questionPt)}</p>
       <button className="lesson-next-btn" onClick={onNext}>
         {t.next}
       </button>
@@ -221,6 +226,7 @@ function CompletionScreen({ cityName, cityId, stars, onBack }) {
 
 export default function LessonView({ content, lessonId, onComplete, onBack }) {
   const t = useUi();
+  const lang = useLang();
   const { lesson, city } = findLessonAndCity(content, lessonId);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -311,7 +317,7 @@ export default function LessonView({ content, lessonId, onComplete, onBack }) {
         <button className="lesson-back-btn" onClick={onBack} aria-label={t.goBackAria}>
           ←
         </button>
-        <span className="lesson-title">{lesson.title}</span>
+        <span className="lesson-title">{pickLang(lang, lesson.title, lesson.titlePt)}</span>
         <span className="lesson-city-name">{city.name}</span>
       </div>
 

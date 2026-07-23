@@ -34,6 +34,8 @@ export default function App() {
   const [selectedCity, setSelectedCity] = useState(null)
   const [selectedLesson, setSelectedLesson] = useState(null)
   const [pan, setPan] = useState(null)             // {from, to} during an f2↔d2 viewBox pan
+  const [mainLang, setMainLang] = useState(() => loadGlobal('main-lang') || 'us')  // 'us' | 'br'
+  const [langPickerOpen, setLangPickerOpen] = useState(false)
 
   // ── Per-journey progress (namespaced in localStorage by journey id) ──
   const [completedLessons, setCompletedLessons] = useState(() => new Set(load(journey, 'completed', [])))
@@ -93,7 +95,8 @@ export default function App() {
   }
 
   const pack = getJourney(journey)
-  const uiLang = pack.labels.uiLang || 'en'
+  // Main-language flag drives the base/native language (overrides per-journey uiLang).
+  const uiLang = mainLang === 'br' ? 'pt' : 'en'
   const t = STRINGS[uiLang]
 
   function handleJourneySelect(j) {
@@ -313,6 +316,20 @@ export default function App() {
       >
         {isCompletedMode() ? '✓ Completed' : 'Complete all'}
       </button>
+
+      {/* Main language tag with flag picker (US / BR) */}
+      <div className="main-lang-tag" onClick={() => setLangPickerOpen(o => !o)}>
+        <span className="main-lang-label">Main language</span>
+        <span className="main-lang-flag">
+          {mainLang === 'br' ? '🇧🇷' : '🇺🇸'}
+        </span>
+        {langPickerOpen && (
+          <div className="main-lang-menu" onClick={e => e.stopPropagation()}>
+            <button onClick={() => { setMainLang('us'); saveGlobal('main-lang', 'us'); setLangPickerOpen(false) }}>🇺🇸</button>
+            <button onClick={() => { setMainLang('br'); saveGlobal('main-lang', 'br'); setLangPickerOpen(false) }}>🇧🇷</button>
+          </div>
+        )}
+      </div>
 
       <nav className="bottom-nav">
         <button

@@ -3,7 +3,7 @@ import WikiPhoto from './WikiPhoto';
 import CityMap from './CityMap';
 import { stageStatus } from './citylifeUtil';
 import { darkenHex, hexToRgba } from './colors';
-import { useUi } from './ui';
+import { useUi, useLang, pickLang } from './ui';
 import './RouteJourney.css';
 
 // The immersive Paris route: a 10-stage timeline you move through like a story.
@@ -32,6 +32,7 @@ export default function RouteJourney({
   gated = false,  // lock stages until the previous one is solved (City Life)
 }) {
   const t = useUi();
+  const lang = useLang();
   const total = places.length;
 
   // Start at the first unsolved stage so returning users resume where they left.
@@ -150,7 +151,7 @@ export default function RouteJourney({
         <div className="stage__body">
           <p className="stage__step">{t.stopN(current + 1)} · {stage.icon}</p>
           <h2 className="stage__name">{stage.name}</h2>
-          <p className="stage__narrative">{stage.narrative}</p>
+          <p className="stage__narrative">{pickLang(lang, stage.narrative, stage.narrativePt)}</p>
 
           {stage.phrases?.length > 0 && (
             <div className="stage__phrases">
@@ -162,7 +163,7 @@ export default function RouteJourney({
                       <span className="stage__phrase-fr">« {ph.fr ?? ph.es ?? ph.de ?? ph.nl ?? ph.da ?? ph.hu ?? ph.ja ?? ph.zh ?? ph.pt ?? ph.cs ?? ph.it ?? ph.ga ?? ph.no ?? ph.sv ?? ph.pl ?? ph.gb} »</span>
                       {(ph.romaji ?? ph.pinyin) && <span className="stage__phrase-romaji">{ph.romaji ?? ph.pinyin}</span>}
                     </span>
-                    <span className="stage__phrase-en">{ph.en}</span>
+                    <span className="stage__phrase-en">{pickLang(lang, ph.en, ph.pt)}</span>
                   </li>
                 ))}
               </ul>
@@ -173,7 +174,7 @@ export default function RouteJourney({
           <div className="stage-quiz">
             <p className="stage-quiz__q">
               {stageDone && answer == null && <span className="stage-quiz__solved">✓ </span>}
-              {stage.quiz.question}
+              {pickLang(lang, stage.quiz.question, stage.quiz.questionPt)}
             </p>
             <div className="stage-quiz__options">
               {stage.quiz.options.map((opt) => {
@@ -195,7 +196,7 @@ export default function RouteJourney({
             )}
             {(correct || (stageDone && answer == null)) && (
               <p className="stage-quiz__feedback stage-quiz__feedback--ok">
-                ✓ {stage.quiz.explanation}
+                ✓ {pickLang(lang, stage.quiz.explanation, stage.quiz.explanationPt)}
               </p>
             )}
           </div>

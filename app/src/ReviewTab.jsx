@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { load, save } from './progress';
-import { useUi } from './ui';
+import { useUi, useLang, pickLang } from './ui';
 import './ReviewTab.css';
 
 function buildCards(content) {
@@ -34,6 +34,7 @@ function countDue(srs, cards) {
 
 export default function ReviewTab({ content, journeyId = 'd2' }) {
   const t = useUi();
+  const lang = useLang();
   const allCards = useMemo(() => buildCards(content), [content]);
   const [srs, setSRS] = useState(() => load(journeyId, 'srs', {}));
   const [flipped, setFlipped] = useState(false);
@@ -141,7 +142,7 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
               {card.article && <span className="fc-article" style={{ color: card.cityColor }}>{card.article}</span>}
               <span className="fc-word">{card.article ? card.word.replace(/^(der|die|das)\s+/i, '') : card.word}</span>
             </div>
-            <p className="fc-english">{card.english}</p>
+            <p className="fc-english">{pickLang(lang, card.english, card.portuguese)}</p>
             {card.example && <p className="fc-example">{card.example}</p>}
           </div>
         </div>

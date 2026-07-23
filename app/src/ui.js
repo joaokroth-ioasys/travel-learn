@@ -282,11 +282,25 @@ const pt = {
 export const STRINGS = { en, pt };
 
 const UiContext = createContext(en);
+const LangContext = createContext('en');
 
 export function UiProvider({ lang, children }) {
-  return createElement(UiContext.Provider, { value: STRINGS[lang] || en }, children);
+  const code = STRINGS[lang] ? lang : 'en';
+  return createElement(
+    LangContext.Provider,
+    { value: code },
+    createElement(UiContext.Provider, { value: STRINGS[code] }, children),
+  );
 }
 
 export function useUi() {
   return useContext(UiContext);
 }
+
+// Active base/native language code ('en' | 'pt'), for picking translated content fields.
+export function useLang() {
+  return useContext(LangContext);
+}
+
+// Pick the pt field when the base language is Portuguese and it exists, else the English field.
+export const pickLang = (lang, en, pt) => (lang === 'pt' && pt != null ? pt : en);

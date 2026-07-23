@@ -2,7 +2,7 @@ import { useState } from 'react';
 import WikiPhoto from './WikiPhoto';
 import RouteJourney from './RouteJourney';
 import { darkenHex, hexToRgba } from './colors';
-import { useUi } from './ui';
+import { useUi, useLang, pickLang } from './ui';
 import './CityPage.css';
 
 // Determine the badge state for a lesson.
@@ -33,6 +33,7 @@ export default function CityPage({
   onLessonSelect, onStageComplete, onToggleFavorite, onBack,
 }) {
   const t = useUi();
+  const lang = useLang();
   const city = content.find((c) => c.id === cityId);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [descEn, setDescEn] = useState(false);
@@ -100,21 +101,26 @@ export default function CityPage({
       <div className="city-page__body">
 
         {/* ── City description (with optional FR↔EN toggle) ── */}
-        {city.description && (
-          <div className="city-page__description">
-            <p className="city-page__description-text">
-              {descEn && city.descriptionEn ? city.descriptionEn : city.description}
-            </p>
-            {city.descriptionEn && (
-              <button
-                className="city-page__translate"
-                onClick={() => setDescEn((v) => !v)}
-              >
-                {descEn ? '🌐 Ver original' : '🇬🇧 Translate to English'}
-              </button>
-            )}
-          </div>
-        )}
+        {city.description && (() => {
+          const trans = pickLang(lang, city.descriptionEn, city.descriptionPt);
+          return (
+            <div className="city-page__description">
+              <p className="city-page__description-text">
+                {descEn && trans ? trans : city.description}
+              </p>
+              {trans && (
+                <button
+                  className="city-page__translate"
+                  onClick={() => setDescEn((v) => !v)}
+                >
+                  {descEn
+                    ? '🌐 Ver original'
+                    : lang === 'pt' ? '🇧🇷 Traduzir' : '🇬🇧 Translate to English'}
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
         {/* ── Photo gallery (classic cities only; immersive cities use the map) ── */}
         {!places && city.photos && city.photos.length > 0 && (
@@ -191,8 +197,8 @@ export default function CityPage({
                 aria-label={`${lesson.title}, ${status === 'complete' ? t.statusCompleted : status === 'continue' ? t.statusInProgress : t.statusNotStarted}`}
               >
                 <div className="city-page__lesson-info">
-                  <p className="city-page__lesson-title">{lesson.title}</p>
-                  <p className="city-page__lesson-desc">{lesson.description}</p>
+                  <p className="city-page__lesson-title">{pickLang(lang, lesson.title, lesson.titlePt)}</p>
+                  <p className="city-page__lesson-desc">{pickLang(lang, lesson.description, lesson.descriptionPt)}</p>
                 </div>
 
                 {status === 'complete' ? (
@@ -223,13 +229,13 @@ export default function CityPage({
         </button>
         {cheatsheetOpen && (
           <div className="cheatsheet-body">
-            <p className="cheatsheet-topic">{city.grammarTopic}</p>
+            <p className="cheatsheet-topic">{pickLang(lang, city.grammarTopic, city.grammarTopicPt)}</p>
             <p className="cheatsheet-note">{t.cheatsheetNote(city.name)}</p>
             {/* Show all grammar steps from all lessons */}
             {city.lessons.flatMap(l => l.steps.filter(s => s.type === 'grammar')).map((g, i) => (
               <div key={i} className="cheatsheet-item">
-                <p className="cheatsheet-item-title">{g.title}</p>
-                <p className="cheatsheet-item-explanation">{g.explanation}</p>
+                <p className="cheatsheet-item-title">{pickLang(lang, g.title, g.titlePt)}</p>
+                <p className="cheatsheet-item-explanation">{pickLang(lang, g.explanation, g.explanationPt)}</p>
                 {g.examples && (
                   <ul className="cheatsheet-item-examples">
                     {g.examples.map((ex, j) => <li key={j}>{ex}</li>)}
