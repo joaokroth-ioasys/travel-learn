@@ -48,6 +48,12 @@ export const STAMP_META = {
   guilin:     { code: 'KWL', sub: '桂林 · Guangxi' },
   guangzhou:  { code: 'CAN', sub: '广州 · Guangdong' },
   hongkong:   { code: 'HKG', sub: '香港 · Hong Kong' },
+  // Italy
+  rome:       { code: 'FCO', sub: 'Roma · Lazio' },
+  florence:   { code: 'FLR', sub: 'Firenze · Toscana' },
+  venice:     { code: 'VCE', sub: 'Venezia · Veneto' },
+  milan:      { code: 'MXP', sub: 'Milano · Lombardia' },
+  naples:     { code: 'NAP', sub: 'Napoli · Campania' },
 }
 
 // Per-country passport "chrome" — the static text on the booklet.
@@ -177,6 +183,32 @@ export const PASSPORTS = {
     ],
     completeText: '🎉 旅程完成！ Journey Complete!',
     completeSub: '所有城市都盖章了！恭喜你！',
+  },
+  it: {
+    name: 'Italia',
+    // no img → uses /passport/it-flag.png + it-stamp.png (TODO: add these PNGs);
+    // city stamps fall back to emoji (it not in STAMPED_IMG).
+    eu: 'UNIONE EUROPEA',
+    emblem: '⭐',
+    coverType: 'PASSAPORTO',
+    bearerLabel: 'Titolare / Bearer',
+    citiesLabel: 'Città / Cities',
+    capitalLabel: 'Capitale / Capital',
+    capital: 'Roma',
+    mottoLabel: 'Motto / Motto',
+    motto: "L'Italia è una Repubblica",
+    stampsLabel: "VISA / TIMBRI D'INGRESSO",
+    mrz: 'ITA',
+    deco: [
+      { icon: '⭐', label: 'Stella d’Italia' },
+      { icon: '🏛️', label: 'Colosseo' },
+      { icon: '🍕', label: 'Pizza' },
+      { icon: '🍝', label: 'Pasta' },
+      { icon: '🍷', label: 'Vino' },
+      { icon: '🎨', label: 'Rinascimento' },
+    ],
+    completeText: '🎉 Viaggio Completato!',
+    completeSub: 'Tutte le città timbrate! Complimenti!',
   },
 }
 

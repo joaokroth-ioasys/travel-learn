@@ -3,6 +3,7 @@ import WikiPhoto from './WikiPhoto';
 import CityMap from './CityMap';
 import { stageStatus } from './citylifeUtil';
 import { darkenHex, hexToRgba } from './colors';
+import { useUi } from './ui';
 import './RouteJourney.css';
 
 // The immersive Paris route: a 10-stage timeline you move through like a story.
@@ -30,6 +31,7 @@ export default function RouteJourney({
   showMap = true, // City Life stages have no real coords → hide the geo map
   gated = false,  // lock stages until the previous one is solved (City Life)
 }) {
+  const t = useUi();
   const total = places.length;
 
   // Start at the first unsolved stage so returning users resume where they left.
@@ -82,17 +84,17 @@ export default function RouteJourney({
       {/* ── Progress header ── */}
       <div className="route__progress">
         <p className="route__progress-label">
-          <span className="route__progress-strong">Stop {current + 1} of {total}</span>
+          <span className="route__progress-strong">{t.stopOf(current + 1, total)}</span>
           <span className="route__progress-sub">{stage.name}</span>
         </p>
         <div className="route__bar" aria-hidden="true">
           <div className="route__bar-fill" style={{ width: `${(doneCount / total) * 100}%` }} />
         </div>
-        <p className="route__progress-count">{doneCount}/{total} stops explored</p>
+        <p className="route__progress-count">{t.stopsExplored(doneCount, total)}</p>
       </div>
 
       {/* ── Timeline ── */}
-      <div className="timeline" role="tablist" aria-label={`${cityName} route`}>
+      <div className="timeline" role="tablist" aria-label={t.routeAria(cityName)}>
         {places.map((p, i) => {
           const done = routeDone.has(p.id);
           const prevDone = i > 0 && routeDone.has(places[i - 1].id);
@@ -108,7 +110,7 @@ export default function RouteJourney({
               className={cls}
               role="tab"
               aria-selected={i === current}
-              aria-label={`Stop ${i + 1}: ${p.name}${done ? ', explored' : locked ? ', locked' : ''}`}
+              aria-label={t.stopAria(i + 1, p.name, done ? t.stopExploredSuffix : locked ? t.stopLockedSuffix : '')}
               onClick={() => go(i)}
               disabled={locked}
             >
@@ -122,7 +124,7 @@ export default function RouteJourney({
 
       {allDone && (
         <div className="route__complete" role="status">
-          🎉 {cityName} complete! You&apos;ve travelled the whole city — and picked up some {langName} along the way.
+          {t.routeComplete(cityName, langName)}
         </div>
       )}
 
@@ -139,20 +141,20 @@ export default function RouteJourney({
             className={`stage__fav${isFav ? ' stage__fav--on' : ''}`}
             onClick={() => onToggleFavorite(stage.id)}
             aria-pressed={isFav}
-            aria-label={isFav ? 'Remove from favourites' : 'Save to favourites'}
+            aria-label={isFav ? t.favRemove : t.favSave}
           >
             {isFav ? '♥' : '♡'}
           </button>
         </div>
 
         <div className="stage__body">
-          <p className="stage__step">Stop {current + 1} · {stage.icon}</p>
+          <p className="stage__step">{t.stopN(current + 1)} · {stage.icon}</p>
           <h2 className="stage__name">{stage.name}</h2>
           <p className="stage__narrative">{stage.narrative}</p>
 
           {stage.phrases?.length > 0 && (
             <div className="stage__phrases">
-              <p className="stage__phrases-title">Phrases to use here</p>
+              <p className="stage__phrases-title">{t.phrasesTitle}</p>
               <ul>
                 {stage.phrases.map((ph, i) => (
                   <li key={i}>
@@ -189,7 +191,7 @@ export default function RouteJourney({
               })}
             </div>
             {answer != null && !correct && (
-              <p className="stage-quiz__feedback stage-quiz__feedback--wrong">Not quite — try again.</p>
+              <p className="stage-quiz__feedback stage-quiz__feedback--wrong">{t.tryAgain}</p>
             )}
             {(correct || (stageDone && answer == null)) && (
               <p className="stage-quiz__feedback stage-quiz__feedback--ok">
@@ -200,7 +202,7 @@ export default function RouteJourney({
 
           {stage.lessonId && (
             <button className="stage__lesson" onClick={() => onLessonSelect(stage.lessonId)}>
-              {completedLessons.has(stage.lessonId) ? `✓ Review the ${langName} lesson` : `→ Learn the ${langName} for this stop`}
+              {completedLessons.has(stage.lessonId) ? t.reviewLesson(langName) : t.learnLesson(langName)}
             </button>
           )}
         </div>
@@ -209,17 +211,17 @@ export default function RouteJourney({
       {/* ── Stage navigation ── */}
       <div className="stage-nav">
         <button className="stage-nav__btn" onClick={() => go(current - 1)} disabled={current === 0}>
-          ← Previous
+          {t.previous}
         </button>
         <button className="stage-nav__btn stage-nav__btn--next" onClick={() => go(current + 1)} disabled={current === total - 1 || nextLocked}>
-          {nextLocked ? 'Solve to continue' : 'Next stop →'}
+          {nextLocked ? t.solveToContinue : t.nextStop}
         </button>
       </div>
 
       {/* ── Map (secondary view of the same route) ── */}
       {showMap && (
         <>
-          <p className="route__map-title">See it on the map</p>
+          <p className="route__map-title">{t.seeOnMap}</p>
           <CityMap
             places={places}
             accentColor={accentColor}

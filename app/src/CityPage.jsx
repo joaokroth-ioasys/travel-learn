@@ -2,6 +2,7 @@ import { useState } from 'react';
 import WikiPhoto from './WikiPhoto';
 import RouteJourney from './RouteJourney';
 import { darkenHex, hexToRgba } from './colors';
+import { useUi } from './ui';
 import './CityPage.css';
 
 // Determine the badge state for a lesson.
@@ -31,6 +32,7 @@ export default function CityPage({
   routeDone = new Set(), favorites = new Set(), langName = 'French',
   onLessonSelect, onStageComplete, onToggleFavorite, onBack,
 }) {
+  const t = useUi();
   const city = content.find((c) => c.id === cityId);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [descEn, setDescEn] = useState(false);
@@ -41,10 +43,10 @@ export default function CityPage({
         <div className="city-page__body">
           <button className="city-page__back" onClick={onBack}>
             <span className="city-page__back-arrow">←</span>
-            Back to Map
+            {t.backToMap}
           </button>
           <p style={{ marginTop: 80, textAlign: 'center', color: '#7a6a58' }}>
-            City not found.
+            {t.cityNotFound}
           </p>
         </div>
       </div>
@@ -68,9 +70,9 @@ export default function CityPage({
   return (
     <div className="city-page">
       {/* ── Back button ── */}
-      <button className="city-page__back" onClick={onBack} aria-label="Back to map">
+      <button className="city-page__back" onClick={onBack} aria-label={t.backToMapAria}>
         <span className="city-page__back-arrow">←</span>
-        Back to Map
+        {t.backToMap}
       </button>
 
       {/* ── Hero banner ── */}
@@ -146,12 +148,12 @@ export default function CityPage({
         )}
 
         {/* ── Objectives ── */}
-        <p className="city-page__section-title">What you&apos;ll learn</p>
+        <p className="city-page__section-title">{t.whatYoullLearn}</p>
         <div className="city-page__objectives">
 
           {/* Vocabulary card */}
           <div className="city-page__obj-card">
-            <p className="city-page__obj-card-title">Vocabulary</p>
+            <p className="city-page__obj-card-title">{t.vocabulary}</p>
             {city.vocabTopics && city.vocabTopics.length > 0 ? (
               <ul className="city-page__vocab-list">
                 {city.vocabTopics.map((topic) => (
@@ -159,15 +161,15 @@ export default function CityPage({
                 ))}
               </ul>
             ) : (
-              <p className="city-page__grammar-text">No topics listed yet.</p>
+              <p className="city-page__grammar-text">{t.noTopics}</p>
             )}
           </div>
 
           {/* Grammar card */}
           <div className="city-page__obj-card">
-            <p className="city-page__obj-card-title">Grammar</p>
+            <p className="city-page__obj-card-title">{t.grammar}</p>
             <p className="city-page__grammar-text">
-              {city.grammarTopic ?? 'No grammar topic listed yet.'}
+              {city.grammarTopic ?? t.noGrammar}
             </p>
           </div>
 
@@ -175,7 +177,7 @@ export default function CityPage({
 
         {/* ── Lessons (classic cities; immersive cities use the route above) ── */}
         {!places && <>
-        <p className="city-page__section-title">Lessons</p>
+        <p className="city-page__section-title">{t.lessons}</p>
         <div className="city-page__lessons-list">
           {city.lessons.map((lesson) => {
             const status = getLessonStatus(lesson, completedLessons, completedSteps);
@@ -186,7 +188,7 @@ export default function CityPage({
                 className="city-page__lesson-card"
                 style={lessonCardVars}
                 onClick={() => onLessonSelect(lesson.id)}
-                aria-label={`${lesson.title}, ${status === 'complete' ? 'Completed' : status === 'continue' ? 'In progress' : 'Not started'}`}
+                aria-label={`${lesson.title}, ${status === 'complete' ? t.statusCompleted : status === 'continue' ? t.statusInProgress : t.statusNotStarted}`}
               >
                 <div className="city-page__lesson-info">
                   <p className="city-page__lesson-title">{lesson.title}</p>
@@ -195,11 +197,11 @@ export default function CityPage({
 
                 {status === 'complete' ? (
                   <span className="city-page__lesson-badge city-page__lesson-badge--complete">
-                    ✓ Complete
+                    {t.badgeComplete}
                   </span>
                 ) : (
                   <span className="city-page__lesson-badge city-page__lesson-badge--continue">
-                    {status === 'continue' ? '▶ Continue' : '→ Start'}
+                    {status === 'continue' ? t.badgeContinue : t.badgeStart}
                   </span>
                 )}
                 {lessonStars[lesson.id] && (
@@ -217,12 +219,12 @@ export default function CityPage({
           className="cheatsheet-toggle"
           onClick={() => setCheatsheetOpen(o => !o)}
         >
-          {cheatsheetOpen ? '▾' : '▸'} Grammar Cheatsheet
+          {cheatsheetOpen ? '▾' : '▸'} {t.grammarCheatsheet}
         </button>
         {cheatsheetOpen && (
           <div className="cheatsheet-body">
             <p className="cheatsheet-topic">{city.grammarTopic}</p>
-            <p className="cheatsheet-note">Reference for all grammar covered in {city.name}.</p>
+            <p className="cheatsheet-note">{t.cheatsheetNote(city.name)}</p>
             {/* Show all grammar steps from all lessons */}
             {city.lessons.flatMap(l => l.steps.filter(s => s.type === 'grammar')).map((g, i) => (
               <div key={i} className="cheatsheet-item">

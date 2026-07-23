@@ -5,6 +5,7 @@ import SavedPhrases from './SavedPhrases';
 import FlagSwitcher from './FlagSwitcher';
 import journeys from './journeys';
 import { cityLifeProgress, firstIncompleteLocation, locationDone, locationMastered } from './citylifeUtil';
+import { useUi } from './ui';
 import './CityLife.css';
 
 // Journeys that actually ship City Life content; the rest are blocked in the switcher.
@@ -21,6 +22,7 @@ export default function CityLife({
   routeDone, favorites, perfect = new Set(), completedLessons, langName = 'German',
   onStageComplete, onToggleFavorite, mapImage,
 }) {
+  const t = useUi();
   const [selected, setSelected] = useState(null);
   const [showSaved, setShowSaved] = useState(false);
   const locs = locations || [];
@@ -29,7 +31,7 @@ export default function CityLife({
   if (location) {
     return (
       <div className="citylife">
-        <button className="cl-back" onClick={() => setSelected(null)}>← City map</button>
+        <button className="cl-back" onClick={() => setSelected(null)}>{t.cityMapBack}</button>
         <RouteJourney
           places={location.stages}
           accentColor={location.accent}
@@ -63,8 +65,8 @@ export default function CityLife({
       <div className="cl-header">
         <span className="cl-header-icon">🏙️</span>
         <div>
-          <div className="cl-header-title">City Life</div>
-          <div className="cl-header-sub">Tap a place and walk through what you&apos;d actually do there</div>
+          <div className="cl-header-title">{t.cityLifeTitle}</div>
+          <div className="cl-header-sub">{t.cityLifeSub}</div>
         </div>
       </div>
 
@@ -74,7 +76,7 @@ export default function CityLife({
 
           {/* Aggregate progress */}
           <div className="cl-progress">
-            <span className="cl-progress-text">{done} / {total} places explored</span>
+            <span className="cl-progress-text">{t.placesExplored(done, total)}</span>
             <div className="cl-progress-bar" aria-hidden="true">
               <div className="cl-progress-fill" style={{ width: `${(done / total) * 100}%` }} />
             </div>
@@ -87,15 +89,15 @@ export default function CityLife({
               disabled={allDone}
               onClick={() => nextLoc && setSelected(nextLoc.id)}
             >
-              {allDone ? 'City explored! 🏆' : `Next: ${nextLoc.name}`}
+              {allDone ? t.cityExplored : t.clNext(nextLoc.name)}
             </button>
             {favCount > 0 && (
-              <button className="cl-saved-btn" onClick={() => setShowSaved(true)}>♥ Saved phrases ({favCount})</button>
+              <button className="cl-saved-btn" onClick={() => setShowSaved(true)}>{t.savedPhrasesBtn(favCount)}</button>
             )}
           </div>
 
           {/* Collectible strip — one chip per place, gold when mastered */}
-          <div className="cl-collect" aria-label="Places collected">
+          <div className="cl-collect" aria-label={t.placesCollectedAria}>
             {locs.map((l) => {
               const isDone = locationDone(l, routeDone);
               const isGold = isDone && locationMastered(l, perfect);
@@ -104,7 +106,7 @@ export default function CityLife({
                   key={l.id}
                   className={`cl-chip${isDone ? ' cl-chip--done' : ''}${isGold ? ' cl-chip--gold' : ''}`}
                   style={{ '--accent': l.accent }}
-                  title={`${l.name}${isGold ? ' · mastered' : isDone ? ' · explored' : ''}`}
+                  title={`${l.name}${isGold ? t.masteredSuffix : isDone ? t.exploredSuffix : ''}`}
                 >
                   {l.icon}
                 </span>
@@ -113,7 +115,7 @@ export default function CityLife({
           </div>
         </>
       ) : (
-        <div className="cl-coming-soon">City Life is coming soon for this country. 🗺️</div>
+        <div className="cl-coming-soon">{t.cityLifeComingSoon}</div>
       )}
     </div>
   );

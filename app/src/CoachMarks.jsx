@@ -1,8 +1,10 @@
+import { useUi } from './ui'
 import './CoachMarks.css'
 
 // One-time explainer shown the first time the map appears (after "Start Journey").
 // All hints show at once; a tap anywhere dismisses the whole thing.
 export default function CoachMarks({ onDismiss }) {
+  const t = useUi()
   return (
     <div className="coach-overlay" onClick={onDismiss}>
       {/* Flag switcher lives inside the centered map column, not the viewport edge,
@@ -11,8 +13,8 @@ export default function CoachMarks({ onDismiss }) {
         <div className="coach-callout coach-flag">
           <span className="coach-arrow coach-arrow-up" />
           <div className="coach-bubble">
-            <strong>Tap the flag</strong>
-            <span>Switch to another journey (country) anytime.</span>
+            <strong>{t.coachFlagTitle}</strong>
+            <span>{t.coachFlagBody}</span>
           </div>
         </div>
       </div>
@@ -20,8 +22,8 @@ export default function CoachMarks({ onDismiss }) {
       {/* City Life — 3rd of 5 bottom-nav tabs (center ~50%) */}
       <div className="coach-callout coach-citylife">
         <div className="coach-bubble">
-          <strong>🏙️ City Life</strong>
-          <span>Practice real-life city scenes and everyday local situations.</span>
+          <strong>{t.coachCityLifeTitle}</strong>
+          <span>{t.coachCityLifeBody}</span>
         </div>
         <span className="coach-arrow coach-arrow-down" />
       </div>
@@ -29,13 +31,13 @@ export default function CoachMarks({ onDismiss }) {
       {/* Passport — 4th of 5 bottom-nav tabs (center ~70%) */}
       <div className="coach-callout coach-passport">
         <div className="coach-bubble">
-          <strong>🛂 Passport</strong>
-          <span>Collect a stamp for every city you complete.</span>
+          <strong>{t.coachPassportTitle}</strong>
+          <span>{t.coachPassportBody}</span>
         </div>
         <span className="coach-arrow coach-arrow-down" />
       </div>
 
-      <p className="coach-hint">Tap anywhere to continue</p>
+      <p className="coach-hint">{t.coachDismiss}</p>
     </div>
   )
 }

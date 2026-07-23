@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { load, save } from './progress';
+import { useUi } from './ui';
 import './ReviewTab.css';
 
 function buildCards(content) {
@@ -32,6 +33,7 @@ function countDue(srs, cards) {
 }
 
 export default function ReviewTab({ content, journeyId = 'd2' }) {
+  const t = useUi();
   const allCards = useMemo(() => buildCards(content), [content]);
   const [srs, setSRS] = useState(() => load(journeyId, 'srs', {}));
   const [flipped, setFlipped] = useState(false);
@@ -67,7 +69,7 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
         className={`city-pill${selectedCity === null ? ' active' : ''}`}
         onClick={() => { setSelectedCity(null); setFlipped(false); }}
       >
-        All
+        {t.filterAll}
       </button>
       {content.map(city => (
         <button
@@ -93,13 +95,13 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
       <div className="review-done">
         {cityFilter}
         <div className="review-done-icon">🎉</div>
-        <h2>All caught up!</h2>
+        <h2>{t.allCaughtUp}</h2>
         <p className="review-done-sub">
           {minutesLeft != null
-            ? `Next card in ${minutesLeft < 60 ? `${minutesLeft}m` : `${Math.ceil(minutesLeft / 60)}h`}`
-            : 'No cards scheduled yet.'}
+            ? t.nextCardIn(minutesLeft < 60 ? `${minutesLeft}m` : `${Math.ceil(minutesLeft / 60)}h`)
+            : t.noCardsScheduled}
         </p>
-        <p className="review-done-total">{visibleCards.length} total cards</p>
+        <p className="review-done-total">{t.totalCards(visibleCards.length)}</p>
       </div>
     );
   }
@@ -108,8 +110,8 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
     <div className="review-tab">
       {cityFilter}
       <div className="review-header">
-        <span className="review-due-badge">{dueCount} due</span>
-        <span className="review-total">{visibleCards.length} cards total</span>
+        <span className="review-due-badge">{t.dueBadge(dueCount)}</span>
+        <span className="review-total">{t.cardsTotal(visibleCards.length)}</span>
       </div>
 
       <div
@@ -119,7 +121,7 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
         role="button"
         tabIndex={0}
         onKeyDown={e => e.key === 'Enter' || e.key === ' ' ? setFlipped(true) : null}
-        aria-label={flipped ? 'Card back' : 'Tap to reveal'}
+        aria-label={flipped ? t.cardBackAria : t.tapToRevealAria}
       >
         <div className="flashcard-inner">
           {/* Front */}
@@ -129,7 +131,7 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
               {card.article && <span className="fc-article" style={{ color: card.cityColor }}>{card.article}</span>}
               <span className="fc-word">{card.article ? card.word.replace(/^(der|die|das)\s+/i, '') : card.word}</span>
             </div>
-            <span className="fc-tap-hint">tap to reveal</span>
+            <span className="fc-tap-hint">{t.tapToReveal}</span>
           </div>
 
           {/* Back */}
@@ -147,13 +149,13 @@ export default function ReviewTab({ content, journeyId = 'd2' }) {
 
       {flipped && (
         <div className="review-buttons">
-          <button className="btn-again" onClick={() => advance(false)}>Again</button>
-          <button className="btn-gotit" onClick={() => advance(true)}>Got it</button>
+          <button className="btn-again" onClick={() => advance(false)}>{t.again}</button>
+          <button className="btn-gotit" onClick={() => advance(true)}>{t.gotIt}</button>
         </div>
       )}
 
       {!flipped && (
-        <p className="review-hint">Tap the card to flip</p>
+        <p className="review-hint">{t.tapToFlip}</p>
       )}
     </div>
   );

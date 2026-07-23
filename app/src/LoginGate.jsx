@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { googleLogin, pull } from './sync'
+import { googleLogin, pull, setToken } from './sync'
 import { loadGlobal, saveGlobal } from './progress'
 import './Onboarding.css'
 
@@ -65,6 +65,12 @@ export default function LoginGate() {
         <p className="onboarding-description">Sign in to save your progress and join the leaderboard.</p>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }} ref={btnRef} />
         {error && <p style={{ color: '#dc2626', fontSize: 14 }}>{error}</p>}
+        <button
+          onClick={() => { setToken('guest'); sessionStorage.setItem('synced', '1'); window.location.reload() }}
+          style={{ marginTop: 16, background: 'none', border: 'none', color: '#6b7280', fontSize: 14, textDecoration: 'underline', cursor: 'pointer' }}
+        >
+          Continue without signing in
+        </button>
       </div>
     </div>
   )

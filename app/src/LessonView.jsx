@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useUi } from './ui';
 import './LessonView.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -20,6 +21,7 @@ function ArticleBadge({ article }) {
 }
 
 function VocabStep({ step, onNext }) {
+  const t = useUi();
   return (
     <div className="lesson-card">
       <div className="vocab-word-row">
@@ -29,13 +31,14 @@ function VocabStep({ step, onNext }) {
       <p className="vocab-english">{step.english}</p>
       {step.example && <p className="vocab-example">{step.example}</p>}
       <button className="lesson-next-btn" onClick={onNext}>
-        Next →
+        {t.next}
       </button>
     </div>
   );
 }
 
 function GrammarStep({ step, onNext }) {
+  const t = useUi();
   return (
     <div className="lesson-card grammar-card">
       <h2 className="grammar-card-title">{step.title}</h2>
@@ -50,7 +53,7 @@ function GrammarStep({ step, onNext }) {
         </ul>
       )}
       <button className="lesson-next-btn" onClick={onNext}>
-        Next →
+        {t.next}
       </button>
     </div>
   );
@@ -101,6 +104,7 @@ function MultipleChoiceExercise({ step, onAdvance, onAnswer }) {
 }
 
 function FillBlankExercise({ step, onAdvance, onAnswer }) {
+  const t = useUi();
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState(null); // null | 'correct' | 'wrong'
   const timerRef = useRef(null);
@@ -138,18 +142,18 @@ function FillBlankExercise({ step, onAdvance, onAnswer }) {
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type your answer…"
+          placeholder={t.typeAnswer}
           disabled={result !== null}
           autoFocus
         />
         {step.hint && result === null && (
-          <p className="fill-blank-hint">Hint: {step.hint}</p>
+          <p className="fill-blank-hint">{t.hint(step.hint)}</p>
         )}
         {result && (
           <p className={`exercise-feedback ${result}`}>
             {result === 'correct'
-              ? `Correct! "${step.correct}" is right.`
-              : `Not quite. The answer is "${step.correct}".`}
+              ? t.correctFeedback(step.correct)
+              : t.wrongFeedback(step.correct)}
           </p>
         )}
         <button
@@ -157,7 +161,7 @@ function FillBlankExercise({ step, onAdvance, onAnswer }) {
           onClick={handleSubmit}
           disabled={result !== null || answer.trim() === ''}
         >
-          Submit
+          {t.submit}
         </button>
       </div>
     </div>
@@ -165,6 +169,7 @@ function FillBlankExercise({ step, onAdvance, onAnswer }) {
 }
 
 function ExerciseStep({ step, onNext, onAnswer }) {
+  const t = useUi();
   if (step.subtype === 'multiple-choice') {
     return <MultipleChoiceExercise step={step} onAdvance={onNext} onAnswer={onAnswer} />;
   }
@@ -176,7 +181,7 @@ function ExerciseStep({ step, onNext, onAnswer }) {
     <div className="lesson-card">
       <p className="exercise-question">{step.question}</p>
       <button className="lesson-next-btn" onClick={onNext}>
-        Next →
+        {t.next}
       </button>
     </div>
   );
@@ -190,7 +195,8 @@ const CITY_MESSAGES = {
 };
 
 function CompletionScreen({ cityName, cityId, stars, onBack }) {
-  const cityMessage = CITY_MESSAGES[cityId] || 'Ausgezeichnet!';
+  const t = useUi();
+  const cityMessage = CITY_MESSAGES[cityId] || t.cityDefaultMessage;
   const starDisplay = Array.from({ length: 3 }, (_, i) =>
     i < stars ? '★' : '☆'
   ).join('');
@@ -199,12 +205,12 @@ function CompletionScreen({ cityName, cityId, stars, onBack }) {
     <div className="completion-overlay">
       <div className="completion-card">
         <div className="completion-checkmark">✓</div>
-        <h2 className="completion-title">Lesson Complete!</h2>
+        <h2 className="completion-title">{t.lessonComplete}</h2>
         <div className="completion-stars">{starDisplay}</div>
         <p className="completion-city-message">{cityMessage}</p>
         <p className="completion-city">{cityName}</p>
         <button className="completion-back-btn" onClick={onBack}>
-          Back to {cityName}
+          {t.backToCity(cityName)}
         </button>
       </div>
     </div>
@@ -214,6 +220,7 @@ function CompletionScreen({ cityName, cityId, stars, onBack }) {
 // ── Main component ───────────────────────────────────────────────────────────
 
 export default function LessonView({ content, lessonId, onComplete, onBack }) {
+  const t = useUi();
   const { lesson, city } = findLessonAndCity(content, lessonId);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -234,9 +241,9 @@ export default function LessonView({ content, lessonId, onComplete, onBack }) {
   if (!lesson || !city) {
     return (
       <div className="lesson-not-found">
-        <h2>Lesson not found</h2>
-        <p>The lesson "{lessonId}" could not be located.</p>
-        <button onClick={onBack}>Go back</button>
+        <h2>{t.lessonNotFound}</h2>
+        <p>{t.lessonNotFoundBody(lessonId)}</p>
+        <button onClick={onBack}>{t.goBack}</button>
       </div>
     );
   }
@@ -285,9 +292,9 @@ export default function LessonView({ content, lessonId, onComplete, onBack }) {
       default:
         return (
           <div className="lesson-card">
-            <p>Unknown step type: {step.type}</p>
+            <p>{t.unknownStep(step.type)}</p>
             <button className="lesson-next-btn" onClick={handleNext}>
-              Next →
+              {t.next}
             </button>
           </div>
         );
@@ -301,7 +308,7 @@ export default function LessonView({ content, lessonId, onComplete, onBack }) {
     >
       {/* Top bar */}
       <div className="lesson-topbar">
-        <button className="lesson-back-btn" onClick={onBack} aria-label="Go back">
+        <button className="lesson-back-btn" onClick={onBack} aria-label={t.goBackAria}>
           ←
         </button>
         <span className="lesson-title">{lesson.title}</span>

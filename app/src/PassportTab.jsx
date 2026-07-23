@@ -5,9 +5,8 @@ import { STAMP_META, PASSPORTS, STAMPED_IMG } from './data/passport'
 import {
   getCityTier, getAvgStars, nextStampCity, worldStats, evaluateAchievements,
 } from './passportUtil'
+import { useUi } from './ui'
 import './PassportTab.css'
-
-const TIER_LABEL = { gold: 'Gold — mastered', silver: 'Silver', bronze: 'Bronze' }
 
 const BASE = import.meta.env.BASE_URL
 const flagSrc = id => `${BASE}passport/${id}-flag.png`
@@ -21,6 +20,8 @@ function formatDate(iso) {
 }
 
 export default function PassportTab({ activeJourney, onGoToCity }) {
+  const t = useUi()
+  const TIER_LABEL = { gold: t.tierGold, silver: t.tierSilver, bronze: t.tierBronze }
   // Fall back to 'd2' if the active journey has no passport (e.g. a stale id).
   const [view, setView] = useState(PASSPORTS[activeJourney] ? activeJourney : 'd2')
   const [selected, setSelected] = useState(null)
@@ -88,8 +89,8 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
 
       {/* ── World Traveller summary (cross-journey) ── */}
       <div className="pp-world">
-        🌍 {ws.stamps} / {ws.totalCities} stamps
-        {ws.countriesComplete > 0 && <span className="pp-world-sub"> · {ws.countriesComplete} {ws.countriesComplete === 1 ? 'country' : 'countries'} complete</span>}
+        🌍 {t.worldStamps(ws.stamps, ws.totalCities)}
+        {ws.countriesComplete > 0 && <span className="pp-world-sub">{t.countriesComplete(ws.countriesComplete)}</span>}
       </div>
 
       {/* ── Country switcher ── */}
@@ -106,7 +107,7 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
               aria-selected={view === id}
               className={`pp-switcher-btn${view === id ? ' active' : ''}${id === activeJourney ? ' pp-switcher-btn--live' : ''}`}
               onClick={() => { setView(id); setSelected(null) }}
-              title={id === activeJourney ? 'Your active journey' : undefined}
+              title={id === activeJourney ? t.activeJourneyTitle : undefined}
             >
               <img className="pp-switcher-flag" src={flagSrc(p.img || id)} alt="" /> {p.name}
               <span className="pp-switcher-count">{complete ? '✓' : `${n}/${total}`}</span>
@@ -117,19 +118,19 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
 
       {!opened.has(view) ? (
         /* ── Closed cover: minimalist EU passport front, tap to open ── */
-        <button className="pp-cover" key={`cover-${view}`} onClick={openCover} aria-label={`Open ${pp.name} passport`}>
+        <button className="pp-cover" key={`cover-${view}`} onClick={openCover} aria-label={t.openPassportAria(pp.name)}>
           <span className="pp-cover-eu">{pp.eu}</span>
           <span className="pp-cover-emblem" aria-hidden="true">{pp.emblem}</span>
           <span className="pp-cover-type">{pp.coverType}</span>
           <span className="pp-cover-bio" aria-hidden="true" />
-          <span className="pp-cover-hint">Tap to open</span>
+          <span className="pp-cover-hint">{t.tapToOpen}</span>
         </button>
       ) : (
       /* ── Open book spread (key remount replays the flip) ── */
       <div className="passport-book" key={view}>
 
         {/* Close back to the cover */}
-        <button className="pp-close" onClick={closeCover} aria-label="Close passport" title="Close passport">✕</button>
+        <button className="pp-close" onClick={closeCover} aria-label={t.closePassport} title={t.closePassport}>✕</button>
 
         {/* Left page: bearer info */}
         <div className="passport-page passport-page--left">
@@ -140,7 +141,7 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
           <div className="pp-fields">
             <div className="pp-field">
               <span className="pp-field-label">{pp.bearerLabel}</span>
-              <span className="pp-field-val">Language Traveller</span>
+              <span className="pp-field-val">{t.languageTraveller}</span>
             </div>
             <div className="pp-field">
               <span className="pp-field-label">{pp.capitalLabel}</span>
@@ -220,8 +221,8 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
         <button
           className="pp-page-turn"
           onClick={turnPage}
-          aria-label={`Turn page to ${PASSPORTS[nextView].name} passport`}
-          title="Next passport"
+          aria-label={t.turnPageAria(PASSPORTS[nextView].name)}
+          title={t.nextPassport}
         />
       </div>
       )}
@@ -241,12 +242,12 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
           </div>
         ) : (
           <>
-            <p className="passport-progress-text">{stampedCount} / {cities.length} cities stamped</p>
+            <p className="passport-progress-text">{t.citiesStamped(stampedCount, cities.length)}</p>
             <div className="passport-progress-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
               <div className="passport-progress-fill" style={{ width: `${pct}%` }} />
             </div>
             {next && next.done > 0 && (
-              <p className="passport-next-nudge">Almost there: {next.city.name} ({next.done}/{next.total})</p>
+              <p className="passport-next-nudge">{t.almostThere(next.city.name, next.done, next.total)}</p>
             )}
           </>
         )}
@@ -255,7 +256,7 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
 
       {/* ── Achievements shelf (global across all journeys) ── */}
       <div className="pp-ach">
-        <p className="pp-ach-title">Achievements · {achievements.filter(a => a.earned).length}/{achievements.length}</p>
+        <p className="pp-ach-title">{t.achievements(achievements.filter(a => a.earned).length, achievements.length)}</p>
         <div className="pp-ach-grid">
           {achievements.map(a => (
             <span
@@ -281,26 +282,26 @@ export default function PassportTab({ activeJourney, onGoToCity }) {
         return (
           <div className="stamp-modal" role="dialog" aria-modal="true" onClick={e => { if (e.target === e.currentTarget) setSelected(null) }}>
             <div className="stamp-modal-inner">
-              <button className="stamp-modal-close" onClick={() => setSelected(null)} aria-label="Close">✕</button>
+              <button className="stamp-modal-close" onClick={() => setSelected(null)} aria-label={t.close}>✕</button>
               {isStamped && stampSrc(imgKey, city.id)
                 ? <img className="stamp-modal-img" src={stampSrc(imgKey, city.id)} alt={city.name} />
                 : <span className="stamp-modal-icon">{city.icon}</span>}
               <p className="stamp-modal-city">{city.name}</p>
               {isStamped ? (
                 <>
-                  <p className="stamp-modal-date">Stamped {formatDate(stamps[city.id])}</p>
+                  <p className="stamp-modal-date">{t.stampedDate(formatDate(stamps[city.id]))}</p>
                   <p className={`stamp-modal-tier stamp-modal-tier--${tier}`}>
                     {TIER_LABEL[tier]}&nbsp;&nbsp;{'★'.repeat(avg)}{'☆'.repeat(3 - avg)}
                   </p>
                   <button className="stamp-modal-go" onClick={() => { setSelected(null); onGoToCity(view, city.id) }}>
-                    {tier === 'gold' ? `Review ${city.name} →` : `Re-practice for gold →`}
+                    {tier === 'gold' ? t.reviewCity(city.name) : t.rePracticeGold}
                   </button>
                 </>
               ) : (
                 <>
-                  <p className="stamp-modal-progress">{done}/{city.lessons.length} lessons complete</p>
+                  <p className="stamp-modal-progress">{t.lessonsComplete(done, city.lessons.length)}</p>
                   <button className="stamp-modal-go" onClick={() => { setSelected(null); onGoToCity(view, city.id) }}>
-                    Go to {city.name} →
+                    {t.goToCity(city.name)}
                   </button>
                 </>
               )}

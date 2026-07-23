@@ -52,6 +52,7 @@ export default function FlagSwitcher({ journey, onSelect, available }) {
   const journeys = [
     { code: 'c2', label: 'Chile' },   // c2 is the Chile journey (cl retired from the UI)
     { code: 'ch', label: 'China' },
+    { code: 'it', label: 'Italy' },   // vertical green/white/red tricolour (CSS, no PNG)
     { code: 'j2', label: 'Japan' },   // j2 is the Japan journey (jp retired from the UI)
     { code: 'wo', label: 'Monde' },
     { code: 'd2', label: 'Germany' },

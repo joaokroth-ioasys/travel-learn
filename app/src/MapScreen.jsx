@@ -6,6 +6,7 @@ import {
   buildMapCities, getCityLessonCounts, getTotalCounts, getCityStatus,
   getCityStarState, getCityAvgStars, countryFillPath,
 } from './mapUtil';
+import { useUi } from './ui';
 import './MapScreen.css';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ export default function MapScreen({
   stars = {}, xp = 0, streak = { count: 0, lastDate: null }, streakAtRisk = false,
   pan = null, onPanDone,
 }) {
+  const t = useUi();
   // Direction of the journey switch, computed in the SAME render that changes the
   // <svg key> (so the entrance animation matches the move). Refs persist across
   // unrelated re-renders, keeping the class stable so the animation doesn't replay.
@@ -110,7 +112,7 @@ export default function MapScreen({
           className={`map-svg${pan ? '' : ` map-svg--${enterDir.current}`}${map.pannable ? ' map-svg--pannable' : ''}`}
           viewBox={vbStr}
           xmlns="http://www.w3.org/2000/svg"
-          aria-label="Journey map"
+          aria-label={t.journeyMapAria}
           {...panProps}
         >
           {/* ── Background ── */}
@@ -491,14 +493,14 @@ export default function MapScreen({
             disabled={allComplete}
             onClick={() => currentCity && onCitySelect(currentCity.id)}
           >
-            {allComplete ? 'Journey complete 🎉' : `Next city: ${currentCity.name}`}
+            {allComplete ? t.journeyComplete : t.nextCity(currentCity.name)}
           </button>
         )}
 
         {/* ── Bottom progress strip ── */}
         <div className="map-progress">
           <span className="map-progress-text">
-            {totalDone} of {grandTotal} lessons completed
+            {t.lessonsCompleted(totalDone, grandTotal)}
           </span>
           <div className="map-progress-bar-wrap" aria-hidden="true">
             <div

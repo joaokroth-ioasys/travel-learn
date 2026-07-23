@@ -45,6 +45,12 @@
 .flag-f2 i:nth-child(2) { background: #fff; }
 .flag-f2 i:nth-child(3) { background: #ef4135; }
 
+/* Italy: vertical green / white / red */
+.flag-it { flex-direction: row; }
+.flag-it i:nth-child(1) { background: #009246; }
+.flag-it i:nth-child(2) { background: #fff; }
+.flag-it i:nth-child(3) { background: #ce2b37; }
+
 /* France: vertical stripes */
 .flag-fr { flex-direction: row; }
 .flag-fr i:nth-child(1) { background: #0055a4; }

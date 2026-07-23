@@ -9,6 +9,7 @@ import CityLife from './CityLife'
 import RewardBurst from './RewardBurst'
 import CoachMarks from './CoachMarks'
 import LoginGate from './LoginGate'
+import { UiProvider, STRINGS } from './ui'
 import journeys, { getJourney } from './journeys'
 import { load, save, loadGlobal, saveGlobal, todayStr, advanceStreak, daysBetween } from './progress'
 import { isLoggedIn, pull } from './sync'
@@ -20,7 +21,7 @@ import './BottomNav.css'
 
 // Journeys drawn from the same world-source basis can do the continuous viewBox
 // pan-zoom between them (f2 ↔ d2 ↔ c2 ↔ j2 ↔ ch); others fall back to the CSS slide.
-const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2', 'ch'])
+const SHARED_BASIS = new Set(['f2', 'd2', 'c2', 'j2', 'ch', 'it'])
 
 export default function App() {
   const [journey, setJourney] = useState(() => {
@@ -92,6 +93,8 @@ export default function App() {
   }
 
   const pack = getJourney(journey)
+  const uiLang = pack.labels.uiLang || 'en'
+  const t = STRINGS[uiLang]
 
   function handleJourneySelect(j) {
     const from = journey
@@ -211,7 +214,7 @@ export default function App() {
   // Lesson view is full-screen, no bottom nav
   if (screen === 'lesson') {
     return (
-      <>
+      <UiProvider lang={uiLang}>
         <LessonView
           content={pack.content}
           lessonId={selectedLesson}
@@ -219,7 +222,7 @@ export default function App() {
           onBack={handleBackToCity}
         />
         <RewardBurst burst={rewardBurst} onDone={() => setRewardBurst(null)} />
-      </>
+      </UiProvider>
     )
   }
 
@@ -241,7 +244,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <UiProvider lang={uiLang}>
       {tab === 'review' ? (
         <ReviewTab content={pack.content} journeyId={journey} />
       ) : tab === 'citylife' ? (
@@ -317,30 +320,30 @@ export default function App() {
           onClick={() => handleTabSwitch('map')}
         >
           <span className="bnav-icon">🗺️</span>
-          <span className="bnav-label">Map</span>
+          <span className="bnav-label">{t.navMap}</span>
         </button>
         <button
           className={`bottom-nav-btn${tab === 'citylife' ? ' active' : ''}`}
           onClick={() => handleTabSwitch('citylife')}
         >
           <span className="bnav-icon">🏙️</span>
-          <span className="bnav-label">City Life</span>
+          <span className="bnav-label">{t.navCityLife}</span>
         </button>
         <button
           className={`bottom-nav-btn${tab === 'passport' ? ' active' : ''}`}
           onClick={() => handleTabSwitch('passport')}
         >
           <span className="bnav-icon">🛂</span>
-          <span className="bnav-label">Passport</span>
+          <span className="bnav-label">{t.navPassport}</span>
         </button>
         <button
           className={`bottom-nav-btn${tab === 'review' ? ' active' : ''}`}
           onClick={() => handleTabSwitch('review')}
         >
           <span className="bnav-icon">🃏</span>
-          <span className="bnav-label">Review</span>
+          <span className="bnav-label">{t.navReview}</span>
         </button>
       </nav>
-    </>
+    </UiProvider>
   )
 }
